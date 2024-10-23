@@ -1,6 +1,6 @@
 import java.time.LocalDateTime;
 
-Public class UserEvent{
+public class UserEvent{
     public String eventType;
     public LocalDateTime date;
     public String message;
