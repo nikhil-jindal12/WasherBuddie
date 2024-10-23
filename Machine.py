@@ -6,6 +6,7 @@ class Machine:
         self._start_time = start_time if start_time else datetime.now()
         self._end_time = end_time
         self._functionality_state = functionality_state
+        self._machine_type = machine_type
 
     @property
     def current_state(self):
@@ -38,3 +39,11 @@ class Machine:
     @functionality_state.setter
     def functionality_state(self, functionality_state):
         self._functionality_state = functionality_state
+
+    @property
+    def machine_type(self):
+        return self._machine_type
+    
+    @machine_type.setter
+    def machine_type(self, machine_type):
+        self._machine_type = machine_type
