@@ -1,0 +1,6 @@
+class Notification:
+    def __init__(self, machineType, userName):
+        self.text_notification = "Your {machineType} cycle has finished. Please swap or pick up your laundry\n\nSincerely,\nWasherBuddie Team".format(machineType)
+        self.email_notification = "Hello {userName},\n\nYour {machineType} cycle has finished. Please swap or pick up your laundry from the laundry room at your earliest convenience.\n\nSincerely,\nWasherBuddie Team".format(userName, machineType)
+        self.follow_up_text_notification = "Your {machineType} cycle has been stagnant and other people would like to use this machine.\n\nPlease swap or pick up your laundry as soon as possible to be courteous to others. If you are unable to do attend to your laundry at this time, please send a message in the House group chat.\n\nSincerely,\nWasherBuddie Team".format(machineType)
+        self.follow_up_email_notification = "Hello {userName},\n\nYour {machineType} cycle has been stagnant and other people would like to use this machine. Please swap or pick up your laundry as soon as possible to be courteous to others. If you are unable to do attend to your laundry at this time, please send a message in the House group chat.\n\nSincerely,\nWasherBuddie Team".format(userName, machineType)
