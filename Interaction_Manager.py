@@ -2,16 +2,16 @@ import Machine
 import User
 
 class Interaction_Manager:
-    def add_washer(self, machine_type='Washer'):
+    def add_washer(self):
         try:
-            Machine(machine_type)
+            Machine('Washer')
             return True
         except:
             return False
 
-    def add_dryer(self, machine_type='Dryer'):
+    def add_dryer(self):
         try:
-            Machine(machine_type)
+            Machine('Dryer')
             return True
         except:
             return False
