@@ -1,9 +1,22 @@
 class User:
-    def __init__(self, user_name='', user_number=0, user_email='', notification_preference=False, is_admin=False):
-        self._user_name = user_name
-        self._user_number = user_number
+    def __init__(self, user_name, notification_preference, user_phone_number, user_email, is_admin=False):
+        if len(user_name) > 0:
+            self._user_name = user_name
+        else:
+            raise ValueError()
+        
+        if len(user_phone_number) == 10:
+            self._user_number = user_phone_number
+        else:
+            raise ValueError()
+        
         self._user_email = user_email
-        self._notification_preference = notification_preference
+        
+        if notification_preference is 'Email' or 'Text':
+            self._notification_preference = notification_preference
+        else:
+            raise ValueError()
+        
         self._is_admin = is_admin
 
     @property
