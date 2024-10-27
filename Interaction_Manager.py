@@ -1,5 +1,6 @@
 import Machine
 import User
+import Notification_Manager
 
 class Interaction_Manager:
     def add_washer(self):
@@ -28,9 +29,16 @@ class Interaction_Manager:
         except:
             return False
 
-    def send_notification(self):
-        # engage another script that sends the user a text or email based on their notification preference
-        return False
+    def send_notification(self, sending_user, receiving_user, message):
+        """
+        Sends a notification to another user from the current user
+
+        Args:
+            sending_user (User): user sending a message
+            receiving_user (User): user receiving the message
+            message (str): message being sent
+        """
+        Notification_Manager.send_ping(sending_user, receiving_user, message)
 
     def add_user(self, user_name, notification_preference, user_phone_number, user_email, phone_carrier, is_admin=False):
         try:

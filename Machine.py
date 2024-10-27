@@ -136,7 +136,7 @@ class Machine:
         return self._machine_type
     
     @get_machine_type.setter
-    def set_machine_type(self, machine_type):
+    def set_machine_type(self, machine_type, user):
         """
         Sets the type of machine
 
@@ -145,7 +145,15 @@ class Machine:
             
         Raises:
             ValueError: Raises error if the machine type is not a washer or dryer
+            TypeError: Raises error if the user is not of type User
+            PermissionError: Raises error if the user is not an admin
         """
+        if type(user) != User:
+            raise TypeError()
+        
+        if not user.get_is_admin():
+            raise PermissionError()
+        
         if machine_type.title() == 'Washer' or machine_type.title() == 'Dryer':
             self._machine_type = machine_type
         else:

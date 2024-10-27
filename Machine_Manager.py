@@ -1,5 +1,8 @@
 import Machine
 import User
+import datetime
+import time
+import Notification_Manager
 
 class Machine_Manager:
 	"""
@@ -23,7 +26,15 @@ class Machine_Manager:
 		if type(machine) != Machine or type(user) != User:
 			raise TypeError()
 		
-		return machine.set_current_state('In Use', user)
+		machine.set_current_state('In Use', user)
+  
+		while True:
+			now = datetime.datetime.now()
+			target_datetime = machine.get_end_time()
+			time_to_wait = (target_datetime - now).total_seconds()
+			time.sleep(time_to_wait)
+			Machine_Manager.end_session(machine, user)
+			Machine_Manager.notify_user(machine, user)
 		
 	def end_session(self, machine, user):
 		"""
@@ -42,7 +53,7 @@ class Machine_Manager:
 		if type(machine) != Machine or type(user) != User:
 			raise TypeError()
 
-		return machine.set_current_state('Available', user)
+		machine.set_current_state('Available', user)
 		
 	def set_out_of_order(self, machine, status, user):
 		"""
@@ -55,17 +66,17 @@ class Machine_Manager:
    
 		Raises:
 			TypeError: if the parameters are not of type Machine or User
-			ValueError: if the user is not an admin
+			PermissionError: if the user is not an admin
 		"""
 		if type(machine) != Machine or type(user) != User:
 			raise TypeError()
 
 		if not user.get_is_admin():
-			raise ValueError()
+			raise PermissionError()
 
-		return machine.set_current_state(status, user)
+		machine.set_current_state(status, user)
 
-	def getStatus(self, machine):
+	def get_status(self, machine):
 		"""
 		Returns the current status of the machine
 
@@ -83,7 +94,7 @@ class Machine_Manager:
 
 		return machine.get_current_state()
 	
-	def notifyUser(self, machine, user):
+	def notify_user(self, machine, user):
 		"""
 		Notifies the user of the machine's completion
 
@@ -97,10 +108,9 @@ class Machine_Manager:
 		if type(machine) != Machine or type(user) != User:
 			raise TypeError()
 
-		# utilize notification manager to notify the user with their preferred method of communication
-		return True
+		Notification_Manager.send_user_notification(user, machine)
 		
-	def logEvent(self, machine, user):
+	def log_event(self, machine, user):
 		"""
 		Logs the user's interaction with the machine
 
