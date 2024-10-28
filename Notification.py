@@ -9,7 +9,7 @@ class Notification:
         Returns:
             str: customized text notification
         """
-        return "Your {machineType} cycle has finished. Please swap or pick up your laundry\n\nSincerely,\nWasherBuddie Team".format(machineType)
+        return "Your {machineType} cycle has finished. Please swap or pick up your laundry\n\nSincerely,\nWasherBuddie Team".format(machineType=machineType)
 
     def get_email_notification(self, userName, machineType):
         """
@@ -22,7 +22,7 @@ class Notification:
         Returns:
             str: customized email notification
         """
-        return "Hello {userName},\n\nYour {machineType} cycle has finished. Please swap or pick up your laundry from the laundry room at your earliest convenience.\n\nSincerely,\nWasherBuddie Team".format(userName, machineType)
+        return "Hello {userName},\n\nYour {machineType} cycle has finished. Please swap or pick up your laundry from the laundry room at your earliest convenience.\n\nSincerely,\nWasherBuddie Team".format(userName=userName, machineType=machineType)
     
     def get_follow_up_text_notification(self, machineType):
         """
@@ -34,7 +34,7 @@ class Notification:
         Returns:
             str: customized follow-up text notification
         """
-        return "Your {machineType} cycle has been stagnant and other people would like to use this machine.\n\nPlease swap or pick up your laundry as soon as possible to be courteous to others. If you are unable to do attend to your laundry at this time, please send a message in the House group chat.\n\nSincerely,\nWasherBuddie Team".format(machineType)
+        return "Your {machineType} cycle has been stagnant and other people would like to use this machine.\n\nPlease swap or pick up your laundry as soon as possible to be courteous to others. If you are unable to do attend to your laundry at this time, please send a message in the House group chat.\n\nSincerely,\nWasherBuddie Team".format(machineType=machineType)
     
     def get_follow_up_email_notification(self, userName, machineType):
         """
@@ -47,4 +47,4 @@ class Notification:
         Returns:
             str: customized follow-up email notification
         """
-        return "Hello {userName},\n\nYour {machineType} cycle has been stagnant and other people would like to use this machine. Please swap or pick up your laundry as soon as possible to be courteous to others. If you are unable to do attend to your laundry at this time, please send a message in the House group chat.\n\nSincerely,\nWasherBuddie Team".format(userName, machineType)
+        return "Hello {userName},\n\nYour {machineType} cycle has been stagnant and other people would like to use this machine. Please swap or pick up your laundry as soon as possible to be courteous to others. If you are unable to do attend to your laundry at this time, please send a message in the House group chat.\n\nSincerely,\nWasherBuddie Team".format(userName=userName, machineType=machineType)

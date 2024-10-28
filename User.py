@@ -21,31 +21,33 @@ class User:
         if len(user_name.split()) == 2:
             self._user_name = user_name
         else:
-            raise ValueError()
+            raise ValueError("No username was provided")
         
-        if len(user_phone_number) == 10:
+        if len(str(abs(user_phone_number))) == 10:
             # check if the user input a 10 digit phone number
             self._user_phone_number = user_phone_number
             self._phone_carrier = phone_carrier
             self._user_email = user_email
-        elif len(user_phone_number) == '' and len(user_email) > 0 and '@' in user_email and '.' in user_email:
+            
+        elif len(user_email) > 0 and '@' in user_email and '.' in user_email:
             # if the user did not input a phone number, they must input a valid email address
             self._user_phone_number = None
             self._phone_carrier = None
-            self._user_email = user_email
+            self.user_email(user_email)
+            print("hi")
         else:
-            raise ValueError()
+            raise ValueError("Invalid email address was given")
         
         # users can only be notified via text or email
-        if notification_preference is 'Email' or 'Text':
+        if notification_preference in ('Email', 'Text'):
             self._notification_preference = notification_preference
         else:
-            raise ValueError()
+            raise ValueError("Invalid communication preference was provided.")
         
         self._is_admin = is_admin
 
     @property
-    def get_user_name(self):
+    def user_name(self):
         """
         Returns the user's name
 
@@ -54,8 +56,8 @@ class User:
         """
         return self._user_name
 
-    @get_user_name.setter
-    def set_user_name(self, user_name):
+    @user_name.setter
+    def user_name(self, user_name):
         """
         Sets the user's name
 
@@ -65,7 +67,7 @@ class User:
         self._user_name = user_name
 
     @property
-    def get_user_phone_number(self):
+    def user_phone_number(self):
         """
         Returns the user's 
 
@@ -74,8 +76,8 @@ class User:
         """
         return self._user_phone_number
 
-    @get_user_phone_number.setter
-    def set_user_phone_number(self, user_phone_number):
+    @user_phone_number.setter
+    def user_phone_number(self, user_phone_number):
         """
         Sets the user's phone number
 
@@ -84,14 +86,15 @@ class User:
 
         Raises:
             ValueError: Raises error if user tries to input a non 10-digit phone number
-        """        
-        if len(user_phone_number) == 10 or len(user_phone_number) == 0:
+        """   
+          
+        if len(str(abs(user_phone_number))) == 10 or len(str(abs(user_phone_number))) == 0:
             self._user_phone_number = user_phone_number
         else:
-            raise ValueError()
+            raise ValueError("Invalid phone number was given")
 
     @property
-    def get_user_email(self):
+    def user_email(self):
         """
         Returns the user's email
 
@@ -100,8 +103,8 @@ class User:
         """
         return self._user_email
 
-    @get_user_email.setter
-    def set_user_email(self, user_email):
+    @user_email.setter
+    def user_email(self, user_email):
         """
         Sets the user's email
 
@@ -111,13 +114,20 @@ class User:
         Raises:
             ValueError: Raises error if the email address does not have an @ and . in it
         """
-        if '@' in user_email and '.' in user_email:
+        
+        def valid_email(word):
+            at_index = word.find('@')
+            if at_index != -1 and '.' in word[at_index:]:
+                return True
+            return False   
+               
+        if valid_email(user_email) == True:
             self._user_email = user_email
         else:
-            raise ValueError()
+            raise ValueError("Invalid email address was given")
 
     @property
-    def get_notification_preference(self):
+    def notification_preference(self):
         """
         Returns the user's notification preference
 
@@ -126,8 +136,8 @@ class User:
         """
         return self._notification_preference
 
-    @get_notification_preference.setter
-    def set_notification_preference(self, notification_preference):
+    @notification_preference.setter
+    def notification_preference(self, notification_preference):
         """
         Sets the user's notification preference
 
@@ -140,10 +150,10 @@ class User:
         if notification_preference.title() == 'Text' or notification_preference.title() == 'Email':
             self._notification_preference = notification_preference
         else:
-            raise ValueError()
+            raise ValueError("Invalid communication method was provided.")
         
     @property
-    def get_phone_carrier(self):
+    def phone_carrier(self):
         """
         Returns the user's phone carrier
 
@@ -152,8 +162,8 @@ class User:
         """        
         return self._phone_carrier
     
-    @get_phone_carrier.setter
-    def set_phone_carrier(self, phone_carrier):
+    @phone_carrier.setter
+    def phone_carrier(self, phone_carrier):
         """
         Sets the user's phone carrier
 
@@ -163,7 +173,7 @@ class User:
         self._phone_carrier = phone_carrier
 
     @property
-    def get_is_admin(self):
+    def is_admin(self):
         """
         Returns whether or not a user is an administrator
 
