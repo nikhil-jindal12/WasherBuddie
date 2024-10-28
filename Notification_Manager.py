@@ -1,6 +1,6 @@
-import User
-#import Notification_Sender
-import Machine
+from User import User
+from Notification_Sender import Notification_Sender
+from Machine import Machine
 
 class Notification_Manager:
     """
@@ -20,16 +20,19 @@ class Notification_Manager:
             TypeError: if parameters or users are not the correct types
             PermissionError: sender doesn't have the right permissions to send a message to all users
         """
-        if type(sender) != User or type(message) != str:
+
+        
+        if not isinstance(sender, User) or type(message) != str:
             raise TypeError()
         
-        if not sender.get_is_admin():
+        if not sender.is_admin:
             raise PermissionError()
         
         for user in users:
             if type(user) != User:
                 raise TypeError()
-            Notification_Sender.send_custom_message(sender, user, message)
+            Notification_Sender.send_custom_message = (sender, user, message)
+        return True
         
     def send_user_notification(self, user, machine):
         """
@@ -43,12 +46,12 @@ class Notification_Manager:
             TypeError: if the parameters are not the correct type
             Exception: if the user has an invalid notification preference
         """
-        if type(user) != User or type(machine) != Machine:
+        if not isinstance(user, User)  or not isinstance(machine, Machine):
             raise TypeError()
         
-        if user.get_notification_preference() == 'Text':
+        if user.notification_preference == 'Text':
             Notification_Sender.send_text_notification(user, machine)
-        elif user.get_notification_preference() == 'Email':
+        elif user.notification_preference == 'Email':
             Notification_Sender.send_email_notification(user, machine)
         else:
             raise Exception()
