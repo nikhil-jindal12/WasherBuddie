@@ -1,8 +1,8 @@
-import Machine
-import User
+from Machine import Machine
+from User import User
 import datetime
 import time
-import Notification_Manager
+from Notification_Manager import Notification_Manager
 
 class Machine_Manager:
 	"""
@@ -26,15 +26,16 @@ class Machine_Manager:
 		if type(machine) != Machine or type(user) != User:
 			raise TypeError()
 		
-		machine.set_current_state('In Use', user)
+		machine.update_state(value=("In Use", user))
   
 		while True:
 			now = datetime.datetime.now()
-			target_datetime = machine.get_end_time()
+			target_datetime = machine.end_time
 			time_to_wait = (target_datetime - now).total_seconds()
 			time.sleep(time_to_wait)
-			Machine_Manager.end_session(machine, user)
-			Machine_Manager.notify_user(machine, user)
+			Machine_Manager.end_session(self, machine, user)
+			Machine_Manager.notify_user(self, machine, user)
+			return True
 		
 	def end_session(self, machine, user):
 		"""
@@ -53,7 +54,8 @@ class Machine_Manager:
 		if type(machine) != Machine or type(user) != User:
 			raise TypeError()
 
-		machine.set_current_state('Available', user)
+		machine.update_state(value=('Available', user))
+		return True
 		
 	def set_out_of_order(self, machine, status, user):
 		"""
@@ -71,10 +73,11 @@ class Machine_Manager:
 		if type(machine) != Machine or type(user) != User:
 			raise TypeError()
 
-		if not user.get_is_admin():
+		if not user.is_admin:
 			raise PermissionError()
 
-		machine.set_current_state(status, user)
+		machine.update_state(value=(status, user))
+		return True
 
 	def get_status(self, machine):
 		"""
@@ -92,7 +95,7 @@ class Machine_Manager:
 		if type(machine) != Machine:
 			raise TypeError()
 
-		return machine.get_current_state()
+		return machine._current_state
 	
 	def notify_user(self, machine, user):
 		"""
@@ -108,7 +111,8 @@ class Machine_Manager:
 		if type(machine) != Machine or type(user) != User:
 			raise TypeError()
 
-		Notification_Manager.send_user_notification(user, machine)
+		Notification_Manager.send_user_notification(Notification_Manager(), user, machine)
+		return True
 		
 	def log_event(self, machine, user):
 		"""

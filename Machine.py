@@ -31,38 +31,39 @@ class Machine:
         """Getter for the current state."""
         return self._current_state
 
-    @current_state.setter
-    def current_state(self, value):
+    # @current_state.setter
+    def update_state(self, value):
 
         if not isinstance(value, tuple) or len(value) != 2 or not isinstance(value[1], User):
             raise TypeError("Invalid state or user type")
         
-        current_state = value[0]
+        next_state = value[0]
         user = value[1]
 
-        if current_state == "Out of Order" and user.is_admin == True:
+        if next_state == "Out of Order" and user.is_admin == True:
             self._current_state = "Out of Order"
             return
         
-        if current_state == "Out of Order" and user.is_admin == False:
+        if next_state == "Out of Order" and user.is_admin == False:
             raise ValueError("Only admins can set the machine to 'Out of Order'")
         
 
-        if self._current_state == 'Available' and current_state == 'In Use':
+        if self._current_state == 'Available' and next_state == 'In Use':
             # Starting cycle
             self._start_time = datetime.now()
             self._current_state = 'In Use'
             self.who_is_using = user.user_name 
-            time_change = timedelta(minutes=50 if self.machine_type == 'Washer' else 60)
+            '''
+            CHANGE TIME DELTA BASED ON MACHINE TYPE AFTER DEMO
+            '''
+            time_change = timedelta(minutes=1 if self.machine_type == 'Washer' else 1)
             self.end_time = self.start_time + time_change
-        elif self._current_state == 'In Use' and current_state == 'Available':
+        elif self._current_state == 'In Use' and next_state == 'Available':
             # Ending cycle
             self._current_state = 'Available'
             self.who_is_using = None  
             self._end_time = None
             self._start_time = None
-        
-
         else:
             raise ValueError("Invalid state transition")
 
