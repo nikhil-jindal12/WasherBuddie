@@ -50,9 +50,9 @@ class Notification_Manager:
             raise TypeError()
         
         if user.notification_preference == 'Text':
-            Notification_Sender.send_text_notification(user, machine)
+            Notification_Sender.send_text_notification(self=Notification_Sender(), user=user, machine=machine)
         elif user.notification_preference == 'Email':
-            Notification_Sender.send_email_notification(user, machine)
+            Notification_Sender.send_email_notification(self=Notification_Sender(), user=user, machine=machine)
         else:
             raise Exception()
         
@@ -71,10 +71,10 @@ class Notification_Manager:
         if type(user) != User or type(machine) != Machine:
             raise TypeError()
         
-        if user.get_notification_preference() == 'Text':
-            Notification_Sender.send_follow_up_text_notification(user, machine)
-        elif user.get_notification_preference() == 'Email':
-            Notification_Sender.send_follow_up_email_notification(user, machine)
+        if user.notification_preference == 'Text':
+            Notification_Sender.send_follow_up_text_notification(Notification_Sender(), user, machine)
+        elif user.notification_preference == 'Email':
+            Notification_Sender.send_follow_up_email_notification(Notification_Sender(), user, machine)
         else:
             raise Exception()
     
@@ -93,7 +93,7 @@ class Notification_Manager:
         if type(sending_user) != User or type(receiving_user) != User or type(message) != str:
             raise TypeError()
 
-        Notification_Sender.send_custom_message(sending_user, receiving_user, message)
+        Notification_Sender.send_custom_message(Notification_Sender(), sending_user, receiving_user, message)
     
     def log_event(self, user_event):
         # log any events with their timestamps into our database
