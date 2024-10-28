@@ -1,5 +1,5 @@
 import User
-import Notification_Sender
+#import Notification_Sender
 import Machine
 
 class Notification_Manager:
