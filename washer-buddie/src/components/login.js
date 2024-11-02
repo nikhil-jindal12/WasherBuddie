@@ -1,5 +1,5 @@
-import React from 'react';
-import '../App.css';
+import { Link } from 'react-router-dom';
+import CreateAccount from './CreateAccount';
 
 function Login() {
   return (
@@ -12,7 +12,7 @@ function Login() {
       </form>
       <div className="login-options">
         <a href="#" className="forgot-password">Forgot Password?</a>
-        <a href="#" className="create-account">Create Account</a>
+        <Link to="/create-account" className="create-account">Create Account</Link>
       </div>
     </div>
   );
