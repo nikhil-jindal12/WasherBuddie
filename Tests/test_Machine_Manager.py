@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import Mock, patch
-from Machine_Manager import Machine_Manager
-from Machine import Machine
-from User import User
+from Service_Layer.Machine_Manager import Machine_Manager
+from Service_Layer.Machine import Machine
+from Service_Layer.User import User
 import pytest
 import pytest
 

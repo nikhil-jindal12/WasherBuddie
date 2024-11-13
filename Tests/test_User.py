@@ -1,6 +1,6 @@
 import pytest
 import unittest
-from User import User
+from Service_Layer.User import User
 
 class TestUser(unittest.TestCase):
 
