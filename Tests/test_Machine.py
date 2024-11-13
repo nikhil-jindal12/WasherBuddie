@@ -1,8 +1,8 @@
 
 import unittest
 from datetime import datetime, timedelta
-from Machine import Machine
-from User import User  
+from Service_Layer.Machine import Machine
+from Service_Layer.User import User  
 
 
 
