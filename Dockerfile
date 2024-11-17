@@ -18,8 +18,8 @@ WORKDIR /app/washerbuddie
 COPY washerbuddie/package.json .
 RUN npm install
 
-# Expose the ports Flask (5000) and React (3000)
-EXPOSE 5000 3000
+# Expose the ports Flask (8000) and React (3000)
+EXPOSE 8000 3000
 
 # Copy the rest of the project files into the container
 COPY . /app/
