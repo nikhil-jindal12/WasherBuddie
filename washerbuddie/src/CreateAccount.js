@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import '../App.css';
+import './App.css';
 
 function CreateAccount() {
   const [notificationMethod, setNotificationMethod] = useState(null);
@@ -23,22 +23,22 @@ function CreateAccount() {
         <div className="notification-preference">
           <label>Notification Preference:</label>
           <div>
-            <input 
-              type="radio" 
-              id="email" 
-              name="notification" 
-              value="email" 
-              onChange={handleNotificationChange} 
+            <input
+              type="radio"
+              id="email"
+              name="notification"
+              value="email"
+              onChange={handleNotificationChange}
             />
             <label htmlFor="email">Email</label>
           </div>
           <div>
-            <input 
-              type="radio" 
-              id="phone" 
-              name="notification" 
-              value="phone" 
-              onChange={handleNotificationChange} 
+            <input
+              type="radio"
+              id="phone"
+              name="notification"
+              value="phone"
+              onChange={handleNotificationChange}
             />
             <label htmlFor="phone">Phone</label>
           </div>

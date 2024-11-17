@@ -1,28 +1,34 @@
-# Step 1: Use Python 3.12 slim image for the backend (Flask)
-FROM python:3.12-slim as backend
+# Step 1: Use Python 3.12-slim as the base image
+FROM python:3.12-slim
 
-# Set working directory for backend (Flask)
+# Install Node.js and npm
+RUN apt-get update && apt-get install -y curl && \
+    curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y nodejs && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Set the working directory
 WORKDIR /app
 
-# Copy the requirements file and install Python dependencies
-COPY requirements.txt /app/
+# Step 2: Set up Python dependencies (if you have any)
+# Copy and install Python dependencies
+COPY requirements.txt . 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Step 2: Use Node.js 16-alpine for the frontend (React)
-FROM node:16-alpine as frontend
-
-# Set working directory for frontend (React)
+# Step 3: Set up React
 WORKDIR /app/washerbuddie
 
-# Copy package.json and install React dependencies (will be created later)
-COPY washerbuddie/package.json .
+# Copy package.json and package-lock.json for React dependencies
+COPY washerbuddie/package.json washerbuddie/package-lock.json ./
+
+# Install React dependencies, including react-router-dom
 RUN npm install
 
-# Expose the ports Flask (5000) and React (3000)
-EXPOSE 5000 3000
+# Copy React source code
+COPY washerbuddie/ .
 
-# Copy the rest of the project files into the container
-COPY . /app/
+# Expose the React port (3000)
+EXPOSE 3000
 
-# Step 3: Run both Flask and React servers
-CMD ["bash", "-c", "flask run --host=0.0.0.0 & npm start --prefix /app/ui"]
+# Step 4: Define the command to run React
+CMD ["npm", "start"]
