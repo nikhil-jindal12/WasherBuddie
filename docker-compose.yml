@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  web:
+    image: node:14
+    working_dir: /washerbuddie
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    command: sh -c "npm install && npm start"
