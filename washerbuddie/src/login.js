@@ -16,7 +16,7 @@ function Login() {
         try {
             const response = await login(email, password);
             if (response.success) {
-                navigate('/home'); // Redirect to home page on successful login
+                navigate('/home-page'); // Redirect to home page on successful login
             } else {
                 setError(response.message); // Display error message from API
                 toast.error(response.message, { position: toast.POSITION.TOP_RIGHT });
@@ -29,6 +29,7 @@ function Login() {
 
     return (
         <div>
+            <Header />
             <h2>Login</h2>
             <form onSubmit={handleSubmit}>
                 <div>
@@ -56,7 +57,7 @@ function Login() {
             </form>
             <div>
                 <Link to="/forgot-password">Forgot Password?</Link>
-                <Link to="/create-account">Create Account</Link>
+                <Link to="/create-Account">Create Account</Link>
             </div>
         </div>
     );

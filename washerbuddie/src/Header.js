@@ -3,9 +3,19 @@ import './Header.css';
 
 function Header() {
     return (
-        <header className="app-header">
+        <div className="app-header">
+            <div className="bubbles">
+                <div className="bubble"></div>
+                <div className="bubble"></div>
+                <div className="bubble"></div>
+                <div className="bubble"></div>
+                <div className="bubble"></div>
+                <div className="bubble"></div>
+                <div className="bubble"></div>
+                <div className="bubble"></div>
+            </div>
             WasherBuddie
-        </header>
+        </div>
     );
 }
 

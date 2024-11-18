@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Header from './Header';
 // import { createUser } from './api';
 import './App.css';
 
@@ -18,7 +19,7 @@ function CreateAccount() {
       try {
           const response = await createUser({ email, phone, password });
           if (response.success) {
-              navigate('/home'); // Redirect to home page on successful account creation
+              navigate('/home-page'); // Redirect to home page on successful account creation
           } else {
               setError(response.message); // Display error message from API
               toast.error(response.message, { position: toast.POSITION.TOP_RIGHT });
@@ -31,6 +32,7 @@ function CreateAccount() {
 
   return (
       <div>
+         <Header />
           <h2>Create Account</h2>
           <form onSubmit={handleSubmit}>
               <div>

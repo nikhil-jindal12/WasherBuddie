@@ -22,7 +22,7 @@ function HomePage() {
                     ? {
                           ...machine,
                           status: machine.status === 'Free' ? 'In Use' : 'Free',
-                          timeRemaining: machine.status === 'Free' ? 30 : 0,
+                          timeRemaining: machine.status === 'Free' ? 50 : 0,
                       }
                     : machine
             )
