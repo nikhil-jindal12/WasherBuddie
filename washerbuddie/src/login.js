@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { login } from './api'; // Assuming you have an API function for login
+import { login } from './api';
 
 function Login() {
     const [email, setEmail] = useState('');
