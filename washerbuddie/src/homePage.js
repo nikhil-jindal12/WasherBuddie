@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
-import '../App.css';
+import './App.css';
 
 function HomePage() {
     const [machines, setMachines] = useState([
