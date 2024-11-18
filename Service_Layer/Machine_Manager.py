@@ -1,8 +1,8 @@
-from Machine import Machine
-from User import User
+from .Machine import Machine
+from .User import User
 import datetime
 import time
-from Notification_Manager import Notification_Manager
+from .Notification_Manager import Notification_Manager
 
 class Machine_Manager:
 	"""

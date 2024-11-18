@@ -1,8 +1,10 @@
-import Machine
-import User
-import Notification_Manager
+from .Machine import Machine
+from .User import User
+from .Notification_Manager import Notification_Manager
 
 class Interaction_Manager:
+    
+
     def add_washer(self):
         """
         Adds a new washing machine
