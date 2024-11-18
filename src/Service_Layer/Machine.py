@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from User import User
+from src.Service_Layer.User import User
 
 class Machine:
     """
@@ -31,8 +31,8 @@ class Machine:
         """Getter for the current state."""
         return self._current_state
 
-    # @current_state.setter
-    def update_state(self, value):
+    @current_state.setter
+    def current_state(self, value):
 
         if not isinstance(value, tuple) or len(value) != 2 or not isinstance(value[1], User):
             raise TypeError("Invalid state or user type")

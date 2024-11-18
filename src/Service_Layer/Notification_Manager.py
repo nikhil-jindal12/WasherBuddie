@@ -1,6 +1,6 @@
-from User import User
-from Notification_Sender import Notification_Sender
-from Machine import Machine
+from src.Service_Layer.User import User
+from src.Service_Layer.Notification_Sender import Notification_Sender
+from src.Service_Layer.Machine import Machine
 
 class Notification_Manager:
     """
@@ -93,7 +93,7 @@ class Notification_Manager:
         if type(sending_user) != User or type(receiving_user) != User or type(message) != str:
             raise TypeError()
 
-        Notification_Sender.send_custom_message(Notification_Sender(), sending_user, receiving_user, message)
+        Notification_Sender.send_custom_message = (sending_user, receiving_user, message)
     
     def log_event(self, user_event):
         # log any events with their timestamps into our database
