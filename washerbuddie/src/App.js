@@ -1,25 +1,24 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './home';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './login';
 import CreateAccount from './CreateAccount';
-import './App.css';
+import HomePage from './homePage';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
-  return (
-    <Router>
-      <div className="App">
-        <header className="App-header">Washer Buddie</header>
-
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/create-account" element={<CreateAccount />} />
-        </Routes>
-      </div>
-    </Router>
-  );
+    return (
+        <Router>
+            <div>
+                <ToastContainer />
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/create-account" element={<CreateAccount />} />
+                    <Route path="/home" element={<HomePage />} />
+                    <Route path="/" element={<Login />} /> {/* Default route */}
+                </Routes>
+            </div>
+        </Router>
+    );
 }
 
 export default App;
-

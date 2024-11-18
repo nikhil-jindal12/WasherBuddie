@@ -1,56 +1,65 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './App.css';
-
 function CreateAccount() {
-  const [notificationMethod, setNotificationMethod] = useState(null);
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleNotificationChange = (e) => {
-    setNotificationMethod(e.target.value);
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+          const response = await createUser({ email, phone, password });
+          if (response.success) {
+              navigate('/home'); // Redirect to home page on successful account creation
+          } else {
+              setError(response.message); // Display error message from API
+              toast.error(response.message, { position: toast.POSITION.TOP_RIGHT });
+          }
+      } catch (err) {
+          setError('An error occurred. Please try again.');
+          toast.error('An error occurred. Please try again.', { position: toast.POSITION.TOP_RIGHT });
+      }
   };
 
   return (
-    <div className="create-account-box">
-      <h2>Create Account</h2>
-      <form>
-        <input type="first" placeholder="First Name" className="input-field" required />
-        <input type="last" placeholder="Last Name" className="input-field" required />
-        <input type="email" placeholder="Email" className="input-field" required />
-        <input type="phone" placeholder="Phone Numer" className="input-field" required />
-        <input type="password" placeholder="Password" className="input-field" required />
-        <input type="password" placeholder="Confirm Password" className="input-field" required />
-
-        <div className="notification-preference">
-          <label>Notification Preference:</label>
+      <div>
+          <h2>Create Account</h2>
+          <form onSubmit={handleSubmit}>
+              <div>
+                  <label>Email</label>
+                  <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                  />
+              </div>
+              <div>
+                  <label>Phone</label>
+                  <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      required
+                  />
+              </div>
+              <div>
+                  <label>Password</label>
+                  <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                  />
+              </div>
+              {error && <p style={{ color: 'red' }}>{error}</p>}
+              <button type="submit">Create Account</button>
+          </form>
           <div>
-            <input
-              type="radio"
-              id="email"
-              name="notification"
-              value="email"
-              onChange={handleNotificationChange}
-            />
-            <label htmlFor="email">Email</label>
+              <Link to="/login">Already have an account? Log In</Link>
           </div>
-          <div>
-            <input
-              type="radio"
-              id="phone"
-              name="notification"
-              value="phone"
-              onChange={handleNotificationChange}
-            />
-            <label htmlFor="phone">Phone</label>
-          </div>
-        </div>
-
-
-        <button type="submit" className="create-account-button">Create Account</button>
-      </form>
-      <p>Already have an account? <Link to="/login">Log In</Link></p>
-    </div>
+      </div>
   );
 }
 
 export default CreateAccount;
-
