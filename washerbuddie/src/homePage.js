@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';
-import Menu from './menu';
+import Menu from './Menu';
 import './App.css';
 
 function HomePage() {
@@ -35,21 +35,31 @@ function HomePage() {
     };
 
     return (
-        <div>
-            <Header />
+        <div className="home-page">
             <Menu />
-            <div className="machine-list">
+            <Header />
+            <div className="machines">
                 {machines.map((machine) => (
-                    <div key={machine.id} className="machine">
-                        <h2>{machine.type} {machine.id}</h2>
+                    <div
+                        key={machine.id}
+                        className={`machine ${machine.type.toLowerCase()}`}
+                    >
+                        <h3>
+                            {machine.type} {machine.id}
+                        </h3>
                         <p>Status: {machine.status}</p>
                         <p>Time Remaining: {machine.timeRemaining} mins</p>
-                        <button onClick={() => handleStartEndUse(machine.id)}>
+                        <button
+                            onClick={() => handleStartEndUse(machine.id)}
+                        >
                             {machine.status === 'Free' ? 'Start Use' : 'End Use'}
                         </button>
                     </div>
                 ))}
             </div>
+            <button className="logout-button" onClick={handleLogout}>
+                Logout
+            </button>
         </div>
     );
 }
