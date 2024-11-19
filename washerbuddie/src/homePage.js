@@ -35,31 +35,21 @@ function HomePage() {
     };
 
     return (
-        <div className="home-page">
-            <Menu />
+        <div>
             <Header />
-            <div className="machines">
+            <Menu />
+            <div className="machine-list">
                 {machines.map((machine) => (
-                    <div
-                        key={machine.id}
-                        className={`machine ${machine.type.toLowerCase()}`}
-                    >
-                        <h3>
-                            {machine.type} {machine.id}
-                        </h3>
+                    <div key={machine.id} className="machine-tile">
+                        <h3>{machine.type} {machine.id}</h3>
                         <p>Status: {machine.status}</p>
                         <p>Time Remaining: {machine.timeRemaining} mins</p>
-                        <button
-                            onClick={() => handleStartEndUse(machine.id)}
-                        >
+                        <button onClick={() => handleStartEndUse(machine.id)}>
                             {machine.status === 'Free' ? 'Start Use' : 'End Use'}
                         </button>
                     </div>
                 ))}
             </div>
-            <button className="logout-button" onClick={handleLogout}>
-                Logout
-            </button>
         </div>
     );
 }

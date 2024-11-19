@@ -213,3 +213,45 @@ header button {
   cursor: pointer;
 
 }
+
+.machine-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.machine-tile {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  width: 200px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.machine-tile:hover {
+  transform: scale(1.05);
+}
+
+.machine-tile h3 {
+  margin: 0 0 0.5rem 0;
+}
+
+.machine-tile p {
+  margin: 0.5rem 0;
+}
+
+.machine-tile button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.machine-tile button:hover {
+  background-color: #0056b3;
+}
