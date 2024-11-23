@@ -58,7 +58,7 @@ def add_user():
     user_email = data.get('user_email')
     phone_carrier = data.get('phone_carrier')
     is_admin = data.get('is_admin', False)  # Default to False if is_admin is not provided
-    is_admin = True if is_admin == "True" else False
+    is_admin = True if is_admin.casefold() == "true" else False
 
     if not user_name:
         return jsonify({'success': False, 'error': 'No username was provided'}), 400
@@ -110,14 +110,7 @@ def add_white_list():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
-@app.route('/log_event', methods=['POST'])
-def log_event():
-    try:
-        success = interaction_manager.log_event()
-        return jsonify({'success': success, 'message': 'Event logged successfully' if success else 'Failed to log event'})
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
-    
+
     
     
     
@@ -126,7 +119,8 @@ def create_session():
     data = request.json
     machine_id = data.get('machine_id')
     user_name = data.get('user_name')
-    time = data.get('time')
+    hours = data.get('hours')
+    minutes = data.get('minutes')
 
     # Validate machine_id and user_name existence
     if machine_id not in interaction_manager.Machines or user_name not in interaction_manager.Users:
@@ -138,7 +132,7 @@ def create_session():
 
     try:
         # Call instance method on interaction_manager
-        success = interaction_manager.create_session(machine, user,time)
+        success = interaction_manager.create_session(machine, user, hours, minutes)
         return jsonify({'success': success, 'message': 'Session created successfully' if success else 'Failed to create session'})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
@@ -170,36 +164,36 @@ def end_session():
 def set_out_of_order():
     data = request.json
     machine_id = data.get('machine_id')
-    status = data.get('status')
     user_name = data.get('user_name')
 
-    # Fetch the machine and user
-    machine = next((m['machine'] for m in Interaction_Manager.machine_manager.Machines if m['id'] == machine_id), None)
-    user = interaction_manager.Users.get(user_name, None)
-
-    if not machine or not user:
+    # Validate machine_id and user_name existence
+    if machine_id not in interaction_manager.Machines or user_name not in interaction_manager.Users:
         return jsonify({'success': False, 'error': 'Machine or User not found'}), 404
-    
+
+    # Fetch the machine and user
+    machine = interaction_manager.Machines[machine_id]
+    user = interaction_manager.Users[user_name]
+
     try:
         # Call set_out_of_order method
-        success = Interaction_Manager.machine_manager.set_out_of_order(machine, status, user)
+        success = interaction_manager.set_out_of_order(machine_id, user)
         return jsonify({'success': success, 'message': 'Machine status updated successfully' if success else 'Failed to update machine status'})
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/get_status', methods=['GET'])
 def get_status():
     machine_id = request.args.get('machine_id')
     
     # Fetch the machine
-    machine = next((m['machine'] for m in Interaction_Manager.machine_manager.Machines if m['id'] == machine_id), None)
+    machine = Interaction_Manager.Machines[machine_id]
 
     if not machine:
         return jsonify({'success': False, 'error': 'Machine not found'}), 404
     
     try:
         # Call get_status method
-        status = Interaction_Manager.machine_manager.get_status(machine)
+        status = Interaction_Manager.get_status(machine)
         return jsonify({'success': True, 'status': status})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
@@ -211,7 +205,7 @@ def notify_user():
     user_name = data.get('user_name')
 
     # Fetch the machine and user
-    machine = next((m['machine'] for m in Interaction_Manager.machine_manager.Machines if m['id'] == machine_id), None)
+    machine = next((m['machine'] for m in Interaction_Manager.Machines if m['id'] == machine_id), None)
     user = interaction_manager.Users.get(user_name, None)
 
     if not machine or not user:
@@ -219,7 +213,7 @@ def notify_user():
     
     try:
         # Call notify_user method
-        success = Interaction_Manager.machine_manager.notify_user(machine, user)
+        success = Interaction_Manager.notify_user(machine, user)
         return jsonify({'success': success, 'message': 'Notification sent successfully' if success else 'Failed to send notification'})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})

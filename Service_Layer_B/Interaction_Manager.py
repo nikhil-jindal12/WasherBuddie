@@ -39,7 +39,7 @@ class Interaction_Manager:
         """ Sends a notification to another user from the current user """
         Notification_Manager.send_ping(sending_user, receiving_user, message)
 
-    def add_user(self, user_name, notification_preference, user_phone_number, user_email, phone_carrier, is_admin=False):
+    def add_user(self, user_name, notification_preference, user_phone_number, user_email, phone_carrier,is_admin):
         """ Adds a new user to the system """
         try:
             if user_name in self.Users:
@@ -90,7 +90,7 @@ class Interaction_Manager:
             print(f"Error getting white list: {e}")
             return False
 
-    def create_session(self, machine, user, hours):
+    def create_session(self, machine, user, hours, minutes):
         """
         Sets the status for a machine to 'In Use' and associates the user with the machine.
         Defaults to a one-hour session if no end time is specified.
@@ -106,7 +106,7 @@ class Interaction_Manager:
 
         # Calculate session duration, defaulting to 1 hour if no end_time is set
         if not machine.end_time:
-            machine.end_time = machine.start_time + datetime.timedelta(hours=hours)
+            machine.end_time = machine.start_time + datetime.timedelta(hours=hours, minutes=minutes)
 
         # Start a background thread to monitor the session
         def monitor_session():
@@ -144,7 +144,7 @@ class Interaction_Manager:
         return True
 
 
-    def set_out_of_order(self, machine_id, status, user):
+    def set_out_of_order(self, machine_id, user):
         """
         Sets the status of the machine to/from out of order
         """
@@ -155,7 +155,7 @@ class Interaction_Manager:
         if not user.is_admin:
             raise PermissionError()
 
-        machine.update_state(value=(status, user))
+        machine.update_state(value=("Out of Order", user))
         return True
 
     def get_status(self, machine_id):
@@ -168,11 +168,10 @@ class Interaction_Manager:
 
         return machine._current_state
     
-    def notify_user(self, machine_id, user):
+    def notify_user(self, machine, user):
         """
         Notifies the user of the machine's completion
         """
-        machine = self.Machines[machine_id]
         if type(machine) != Machine or type(user) != User:
             raise TypeError()
 
