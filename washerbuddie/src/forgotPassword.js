@@ -14,7 +14,7 @@ function ForgotPassword() {
     toast.success('Success!', { position: toast.POSITION.TOP_RIGHT });
     setTimeout(() => {
       navigate('/login'); // Redirect to login page after form submission
-    }, 2000); // Delay to allow the toast to be visible before redirect
+    }, 1000); // Delay to allow the toast to be visible before redirect
   };
 
   return (

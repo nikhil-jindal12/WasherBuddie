@@ -19,6 +19,8 @@ function Header() {
         <div className="bubble"></div>
         <div className="bubble"></div>
         <div className="bubble"></div>
+        <div className="bubble"></div>
+        <div className="bubble"></div>
       </div>
       <div className="header-content">
         <h1>WasherBuddie</h1>

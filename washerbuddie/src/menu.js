@@ -16,7 +16,7 @@ function Menu() {
     toast.success('Success!');
     setTimeout(() => {
       navigate('/');
-    }, 2000); // Redirect after 2 seconds to allow the toast to be visible
+    }, 1000); // Redirect after 1 second to allow the toast to be visible
   };
 
   return (
@@ -34,9 +34,8 @@ function Menu() {
           </ul>
         </div>
       )}
-      <ToastContainer position="top-right" autoClose={2000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+      <ToastContainer position="top-right" autoClose={1000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
     </div>
   );
 }
-
 export default Menu;
