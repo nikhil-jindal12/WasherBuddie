@@ -7,11 +7,11 @@ import './App.css';
 function HomePage() {
     const [machines, setMachines] = useState([
         { id: 1, type: 'Washer', status: 'Free', timeRemaining: 0 },
-        { id: 2, type: 'Washer', status: 'In Use', timeRemaining: 30 },
+        { id: 2, type: 'Washer', status: 'Free', timeRemaining: 0 },
         { id: 3, type: 'Washer', status: 'Free', timeRemaining: 0 },
         { id: 4, type: 'Dryer', status: 'Free', timeRemaining: 0 },
         { id: 5, type: 'Dryer', status: 'Free', timeRemaining: 0 },
-        { id: 6, type: 'Dryer', status: 'In Use', timeRemaining: 20 },
+        { id: 6, type: 'Dryer', status: 'Free', timeRemaining: 0 },
     ]);
 
     const navigate = useNavigate();
@@ -36,8 +36,8 @@ function HomePage() {
 
     return (
         <div>
-            <Header />
             <Menu />
+            <Header />
             <div className="machine-list">
                 {machines.map((machine) => (
                     <div key={machine.id} className="machine-tile">

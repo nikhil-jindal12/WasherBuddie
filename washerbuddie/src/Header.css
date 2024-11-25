@@ -91,14 +91,15 @@
 
 @keyframes rise {
   0% {
-    bottom: -50px;
-    transform: translateX(-50%);
+      bottom: -50px;
+      transform: translateX(-50%);
   }
   100% {
-    bottom: 100%;
-    transform: translateX(-50%);
+      bottom: 100%;
+      transform: translateX(-50%);
   }
 }
+
 .header-content {
   display: flex;
   justify-content: space-between;

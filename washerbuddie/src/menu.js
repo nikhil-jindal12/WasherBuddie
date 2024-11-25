@@ -1,11 +1,22 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Menu.css';
 
 function Menu() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = () => {
+    toast.success('Success!');
+    setTimeout(() => {
+      navigate('/');
+    }, 2000); // Redirect after 2 seconds to allow the toast to be visible
   };
 
   return (
@@ -16,12 +27,14 @@ function Menu() {
       {isOpen && (
         <div className="dropdown-menu">
           <ul>
-            <li><button>Log out</button></li>
+            <li><button onClick={handleLogout}>Log out</button></li>
             <li><button>Notification Preferences</button></li>
             <li><button>Password Preferences</button></li>
+            <li><button>Admin Preferences</button></li>
           </ul>
         </div>
       )}
+      <ToastContainer position="top-right" autoClose={2000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
     </div>
   );
 }
