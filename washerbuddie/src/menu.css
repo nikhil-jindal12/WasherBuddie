@@ -7,7 +7,7 @@
 }
 
 .menu-toggle {
-  background-color: #007bff;
+  background-color: #0056b3;
   color: white;
   border: none;
   padding: 1rem 2rem; /* Increase padding for a larger button */
@@ -45,7 +45,7 @@
 
 .dropdown-menu li button {
   width: 100%;
-  background-color: #11c3f0;
+  background-color: #1163f0;
   color: white;
   border: none;
   padding: 1rem 0; /* Increase padding for larger buttons */
@@ -60,4 +60,17 @@
 
 .dropdown-menu li button:hover {
   background-color: #0056b3;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 600px) {
+  .menu-toggle {
+    padding: 0.5rem 1rem; /* Adjust padding for smaller screens */
+    font-size: 1rem; /* Adjust font size for smaller screens */
+  }
+
+  .dropdown-menu li button {
+    padding: 0.5rem 0; /* Adjust padding for smaller screens */
+    font-size: 0.875rem; /* Adjust font size for smaller screens */
+  }
 }
