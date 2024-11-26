@@ -8,6 +8,7 @@ import ForgotPassword from './ForgotPassword';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from './Header';
+import UserPreferences from '/UserPreferences';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/create-account" element={<CreateAccount />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/home-page" element={<HomePage />} />
+        <Route path="/user-preferences" element={<UserPreferences />} />
       </Routes>
       <ToastContainer />
     </Router>

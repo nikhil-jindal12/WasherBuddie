@@ -28,9 +28,7 @@ function Menu() {
         <div className="dropdown-menu">
           <ul>
             <li><button onClick={handleLogout}>Log out</button></li>
-            <li><button>Notification Preferences</button></li>
-            <li><button>Password Preferences</button></li>
-            <li><button>Admin Preferences</button></li>
+            <button onClick={() => navigate('/login')}>User Preferences</button>
           </ul>
         </div>
       )}
