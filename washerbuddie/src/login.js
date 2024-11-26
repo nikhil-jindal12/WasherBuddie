@@ -11,27 +11,27 @@ function Login() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await login(email, password);
-            if (response.success) {
-                navigate('/home-page'); // Redirect to home page on successful login
-            } else {
-                setError(response.message); // Display error message from API
-                toast.error(response.message, { position: toast.POSITION.TOP_RIGHT });
-            }
-        } catch (err) {
-            setError('An error occurred. Please try again.');
-            toast.error('An error occurred. Please try again.', { position: toast.POSITION.TOP_RIGHT });
-        }
-    };
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     try {
+    //         const response = await login(email, password);
+    //         if (response.success) {
+    //             navigate('/home-page'); // Redirect to home page on successful login
+    //         } else {
+    //             setError(response.message); // Display error message from API
+    //             toast.error(response.message, { position: toast.POSITION.TOP_RIGHT });
+    //         }
+    //     } catch (err) {
+    //         setError('An error occurred. Please try again.');
+    //         toast.error('An error occurred. Please try again.', { position: toast.POSITION.TOP_RIGHT });
+    //     }
+    // };
 
     return (
         <div>
             <Header />
             <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={() => console.log('TODO')}> {/* TODO - link to DB */}
                 <div>
                     <label>Email</label>
                     <input
