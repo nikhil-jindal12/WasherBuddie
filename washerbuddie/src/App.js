@@ -8,7 +8,7 @@ import ForgotPassword from './ForgotPassword';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from './Header';
-import UserPreferences from '/UserPreferences';
+import UserPreferences from './UserPreferences';
 
 function App() {
   return (
