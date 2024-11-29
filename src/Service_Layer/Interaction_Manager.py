@@ -1,5 +1,9 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
+import threading
+import datetime
+import time
+import traceback
 
 if TYPE_CHECKING:
     from mongoDB.CRUD_api import Database_Manager
@@ -8,6 +12,7 @@ if TYPE_CHECKING:
     from src.Service_Layer.Notification_Manager import Notification_Manager
 
 class Interaction_Manager:
+    machine_count = 0
     def add_washer(self, machine_id: int) -> bool:
         """
         Adds a new washing machine
@@ -19,8 +24,9 @@ class Interaction_Manager:
             boolean: whether or not the washer was added successfully
         """
         try:
-            Machine('Washer', machine_id)
-            return True
+            washer = Machine('Washer', self.machine_count)
+            machine_count+=1
+            return Database_Manager().insert_washer(washer)
         except:
             return False
 
@@ -35,7 +41,9 @@ class Interaction_Manager:
             boolean: whether or not the dryer was added successfully
         """
         try:
-            return Database_Manager().insert_dryer(Machine('Dryer', machine_id))
+            dryer = Machine('Dryer', self.machine_count)
+            machine_count+=1
+            return Database_Manager().insert_dryer(dryer)
         except:
             return False
 
@@ -67,6 +75,7 @@ class Interaction_Manager:
             _type_: _description_
         """
         try:
+            #need to check if the user already exists first
             return Database_Manager().insert_single_user(User(user_name, user_email, phone_carrier, notification_preference, user_phone_number, is_admin, password))
         except:
             return False
@@ -113,3 +122,102 @@ class Interaction_Manager:
             return Database_Manager().get_valid_users()
         except:
             return False
+        
+#below needs to be integrated into the class, may keep local vars, my go into the db, then get rid of machine manager      
+    
+    def create_session(self, machine, user, hours, minutes):
+        """
+        Sets the status for a machine to 'In Use' and associates the user with the machine.
+        Defaults to a one-hour session if no end time is specified.
+        """
+        if not isinstance(machine, Machine) or not isinstance(user, User):
+            raise TypeError("Invalid machine or user type")
+
+        if machine.current_state != 'Available':
+            raise ValueError(f"Machine {machine.machine_type} is not available")
+
+        # Update machine state to 'In Use'
+        machine.update_state(value=("In Use", user))
+
+        # Calculate session duration, defaulting to 1 hour if no end_time is set
+        if not machine.end_time:
+            machine.end_time = machine.start_time + datetime.timedelta(hours=hours, minutes=minutes)
+
+        # Start a background thread to monitor the session
+        def monitor_session():
+            now = datetime.datetime.now()
+            time_to_wait = (machine.end_time - now).total_seconds()
+            if time_to_wait > 0:
+                time.sleep(time_to_wait)
+
+            # End the session and notify the user
+            self.end_session(machine, user)
+            self.notify_user(machine, user)
+
+        thread = threading.Thread(target=monitor_session, daemon=True)
+        thread.start()
+
+        return True
+
+
+            
+        def end_session(self, machine, user):
+            """
+            Ends the session for a machine, sets it back to 'Available', and clears user association.
+            """
+            if not isinstance(machine, Machine) or not isinstance(user, User):
+                raise TypeError("Invalid machine or user type")
+
+            if machine.current_state != 'In Use':
+                raise ValueError(f"Machine {machine.machine_type} is not currently in use")
+
+            if machine.who_is_using != user.user_name:
+                raise PermissionError(f"User {user.user_name} is not authorized to end this session")
+
+            # Update machine state to 'Available'
+            machine.update_state(value=('Available', user))
+            return True
+
+
+        def set_out_of_order(self, machine_id, user):
+            """
+            Sets the status of the machine to/from out of order
+            """
+            machine = self.Machines[machine_id]
+            if type(machine) != Machine or type(user) != User:
+                raise TypeError()
+
+            if not user.is_admin:
+                raise PermissionError()
+
+            machine.update_state(value=("Out of Order", user))
+            return True
+
+        def get_status(self, machine_id):
+            """
+            Returns the current status of the machine
+            """
+            machine = self.Machines[machine_id]
+            if type(machine) != Machine:
+                raise TypeError()
+
+            return machine._current_state
+        
+        def notify_user(self, machine, user):
+            """
+            Notifies the user of the machine's completion
+            """
+            if type(machine) != Machine or type(user) != User:
+                raise TypeError()
+
+            Notification_Manager.send_user_notification(Notification_Manager(), user, machine)
+            return True
+            
+        # def log_event(self, machine, user):
+        #     """
+        #     Logs the user's interaction with the machine
+        #     """
+        #     if type(machine) != Machine or type(user) != User:
+        #         raise TypeError()
+        #     return True
+        
