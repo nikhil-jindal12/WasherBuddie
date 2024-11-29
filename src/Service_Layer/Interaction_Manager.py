@@ -125,7 +125,7 @@ class Interaction_Manager:
         
 #below needs to be integrated into the class, may keep local vars, my go into the db, then get rid of machine manager      
     
-    def create_session(self, machine, user, hours, minutes):
+    def create_session(self, machine: Machine, user: User, hours, minutes) -> bool:
         """
         Sets the status for a machine to 'In Use' and associates the user with the machine.
         Defaults to a one-hour session if no end time is specified.
@@ -161,22 +161,22 @@ class Interaction_Manager:
 
 
             
-        def end_session(self, machine, user):
-            """
-            Ends the session for a machine, sets it back to 'Available', and clears user association.
-            """
-            if not isinstance(machine, Machine) or not isinstance(user, User):
-                raise TypeError("Invalid machine or user type")
+    def end_session(self, machine: Machine, user: User) -> bool:
+        """
+        Ends the session for a machine, sets it back to 'Available', and clears user association.
+        """
+        if not isinstance(machine, Machine) or not isinstance(user, User):
+            raise TypeError("Invalid machine or user type")
 
-            if machine.current_state != 'In Use':
-                raise ValueError(f"Machine {machine.machine_type} is not currently in use")
+        if machine.current_state != 'In Use':
+            raise ValueError(f"Machine {machine.machine_type} is not currently in use")
 
-            if machine.who_is_using != user.user_name:
-                raise PermissionError(f"User {user.user_name} is not authorized to end this session")
+        if machine.who_is_using != user.user_name:
+            raise PermissionError(f"User {user.user_name} is not authorized to end this session")
 
-            # Update machine state to 'Available'
-            machine.update_state(value=('Available', user))
-            return True
+        # Update machine state to 'Available'
+        machine.update_state(value=('Available', user))
+        return True
 
 
         def set_out_of_order(self, machine_id, user):
