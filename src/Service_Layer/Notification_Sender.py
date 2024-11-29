@@ -1,8 +1,8 @@
 import smtplib
 from email.mime.text import MIMEText
-from .User import User
-from .Notification import Notification
-from .Machine import Machine
+from src.Service_Layer.User import User
+from src.Service_Layer.Notification import Notification
+from src.Service_Layer.Machine import Machine
 
 class Notification_Sender:
 	
@@ -15,6 +15,8 @@ class Notification_Sender:
 						'T-Mobile': '@tmomail.net',
 						'U.S. Cellular': '@mms.uscc.net',
 						}
+ 
+	_password = 'smbd ipal qysl zxxw'
 	
 	@property
 	def mobile_carriers(self):
@@ -25,6 +27,16 @@ class Notification_Sender:
 			dict: list of mobile carriers and their gateway addresses
 		"""
 		return self._mobile_carriers
+
+	@property
+	def password(self):
+		"""
+		Returns the password for the email account
+
+		Returns:
+			str: password for the email account
+		"""
+		return self._password
 
 	def	send_text_notification(self, user, machine):
 		"""
@@ -47,7 +59,7 @@ class Notification_Sender:
 
 		with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
 			smtp.starttls()
-			smtp.login("washerbuddie@gmail.com", "zqsp ieqt qils etkr")
+			smtp.login("washerbuddie@gmail.com", self.password)
 			smtp.send_message(msg)
 			smtp.quit()
    
@@ -72,7 +84,7 @@ class Notification_Sender:
 
 		with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
 			smtp.starttls()
-			smtp.login("washerbuddie@gmail.com", "zqsp ieqt qils etkr")
+			smtp.login("washerbuddie@gmail.com", self.password)
 			smtp.send_message(msg)
 			smtp.quit()
   
@@ -97,7 +109,7 @@ class Notification_Sender:
   
 		with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
 			smtp.starttls()
-			smtp.login("washerbuddie@gmail.com", "zqsp ieqt qils etkr")
+			smtp.login("washerbuddie@gmail.com", self.password)
 			smtp.send_message(msg)
 			smtp.quit()
    
@@ -122,7 +134,7 @@ class Notification_Sender:
 
 		with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
 			smtp.starttls()
-			smtp.login("washerbuddie@gmail.com", "zqsp ieqt qils etkr")
+			smtp.login("washerbuddie@gmail.com", self.password)
 			smtp.send_message(msg)
 			smtp.quit()
    
@@ -154,6 +166,6 @@ class Notification_Sender:
 
 		with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
 			smtp.starttls()
-			smtp.login("washerbuddie@gmail.com", "zqsp ieqt qils etkr")
+			smtp.login("washerbuddie@gmail.com", self.password)
 			smtp.send_message(msg)
 			smtp.quit()
