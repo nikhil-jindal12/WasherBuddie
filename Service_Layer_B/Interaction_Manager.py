@@ -13,7 +13,7 @@ class Interaction_Manager:
     Users = {}
     white_list = []
 
-    def add_washer(self):
+    def add_washer(self) -> bool:
         """ Adds a new washing machine """
         try:
             washer = Machine('Washer', self.machine_count)
@@ -178,10 +178,3 @@ class Interaction_Manager:
         Notification_Manager.send_user_notification(Notification_Manager(), user, machine)
         return True
         
-    # def log_event(self, machine, user):
-    #     """
-    #     Logs the user's interaction with the machine
-    #     """
-    #     if type(machine) != Machine or type(user) != User:
-    #         raise TypeError()
-    #     return True

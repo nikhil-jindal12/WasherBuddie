@@ -44,6 +44,11 @@ class Database_Manager:
 			raise TypeError("Input must be an instance of the User class")
 		
 		collection = self.setup_connection().Users
+
+		# check to see if user alr exists
+		if (collection.find_one({"_user_name": user.user_name}) != None):
+			return False
+
 		collection.insert_one(user.__dict__).inserted_id
 		return True
 
@@ -69,8 +74,9 @@ class Database_Manager:
 			to_add.append(user.__dict__)
 		
 		collection = self.setup_connection().Users
-		inserted_ids = collection.insert_many(to_add).inserted_ids
-		return inserted_ids
+		for user in to_add:
+			collection.insert_one(user)
+		return True
 
 	def insert_washer(self, washer: Machine) -> bool:
 		"""
@@ -85,11 +91,13 @@ class Database_Manager:
 		Returns:
 			str: inserted_id of the field
 		"""
-		# if not isinstance(washer, Machine):
-		# 	raise TypeError("Input must be an instance of the Machine class")
-
 		washerbuddie_db = self.setup_connection()
 		collection = washerbuddie_db.Machines
+  
+		# check to see if the machine already exists
+		if (collection.find_one({"_machine_id": washer.machine_id}) != None):
+			return False
+  
 		collection.insert_one(washer.__dict__)
 		if (collection.find_one({"_machine_id": washer.machine_id}) == None):
 			return False
@@ -112,6 +120,11 @@ class Database_Manager:
 		# 	raise TypeError("Input must be an instance of the Machine class")
 
 		collection = self.setup_connection().Machines
+
+		# check to see if the machine already exists
+		if (collection.find_one({"_machine_id": dryer.machine_id}) != None):
+			return False
+  
 		collection.insert_one(dryer.__dict__).inserted_id
 		if (collection.find_one({"_machine_id": dryer.machine_id}) == None):
 			return False
@@ -205,7 +218,15 @@ class Database_Manager:
 		"""
 		collection = self.setup_connection().Machines
 		machine = collection.find_one({"_machine_id": machine_id})
-		return Machine(machine['_machine_type'], machine['_machine_id'])
+		if (machine == None):
+			return None
+
+		rv = Machine(machine['_machine_type'], machine['_machine_id'])
+		rv._current_state = machine['_current_state']
+		rv._who_is_using = machine['_who_is_using']
+		rv._start_time = machine['_start_time']
+		rv._end_time = machine['_end_time']
+		return rv
 
 	def change_machine_state(self, machine_id: int, new_state: Union[str, None]) -> bool:
 		"""
@@ -222,8 +243,7 @@ class Database_Manager:
 			boolean: True if the machine's state was changed, False otherwise
 		"""
 		collection = self.setup_connection().Machines
-		machine = collection.find_one({"_machine_id": machine_id})
-		machine['_current_state'] = new_state
+		collection.update_one({"_machine_id": machine_id}, {"$set": {"_current_state": new_state}})
 		if (collection.find_one({"_machine_id": machine_id}) == None):
 			return False
 		return True
@@ -243,8 +263,7 @@ class Database_Manager:
 			boolean: True if the machine's user was changed, False otherwise
 		"""
 		collection = self.setup_connection().Machines
-		machine = collection.find_one({"_machine_id": machine_id})
-		machine['_who_is_using'] = new_user
+		collection.update_one({"_machine_id": machine_id}, {"$set": {"_who_is_using": new_user}})
 		if (collection.find_one({"_machine_id": machine_id}) == None):
 			return False
 		return True
@@ -264,8 +283,7 @@ class Database_Manager:
 			boolean: True if the machine's start time was changed, False otherwise
 		"""
 		collection = self.setup_connection().Machines
-		machine = collection.find_one({"_machine_id": machine_id})
-		machine['_start_time'] = new_start_time
+		collection.update_one({"_machine_id": machine_id}, {"$set": {"_start_time": new_start_time}})
 		if (collection.find_one({"_machine_id": machine_id}) == None):
 			return False
 		return True
@@ -285,11 +303,28 @@ class Database_Manager:
 			boolean: True if the machine's end time was changed, False otherwise
 		"""
 		collection = self.setup_connection().Machines
-		machine = collection.find_one({"_machine_id": machine_id})
-		machine['_end_time'] = new_end_time
+		collection.update_one({"_machine_id": machine_id}, {"$set": {"_end_time": new_end_time}})
 		if (collection.find_one({"_machine_id": machine_id}) == None):
 			return False
 		return True
+
+	def get_all_machines(self) -> list:
+		"""
+		Retrieves all machines from the database
+
+		Returns:
+			list: list of all machines
+		"""
+		collection = self.setup_connection().Machines
+		all_machines = []
+		for machine in collection.find():
+			rv = Machine(machine['_machine_type'], machine['_machine_id'])
+			rv._current_state = machine['_current_state']
+			rv._who_is_using = machine['_who_is_using']
+			rv._start_time = machine['_start_time']
+			rv._end_time = machine['_end_time']
+			all_machines.append(rv)
+		return all_machines
 
 	def find_user_by_id(self, user_id: str) -> User:
 		"""
@@ -326,7 +361,30 @@ class Database_Manager:
 		user = collection.find_one({"_user_email": user_email})
 		if user is None:
 			return False
-		return bcrypt.checkpw(user['_password'].encode('utf-8'), user_password.encode('utf-8'))
+		salt = bcrypt.gensalt()
+		return bcrypt.checkpw(user_password.encode('utf-8'), bcrypt.hashpw(str(user['_password']).encode('utf-8'), salt))
+
+	def get_specific_user(self, user_name: str) -> User:
+		"""
+		Retrieves a specific user from the database
+
+		Args:
+			user_name (str): name of the user to be retrieved
+
+		Raises:
+			TypeError: if user is not an instance of the str class
+
+		Returns:
+			User: user with the given name
+		"""
+		if not isinstance(user_name, str):
+			raise TypeError("Input must be a string of the User's name")
+
+		collection = self.setup_connection().Users
+		user = collection.find_one({"_user_name": user_name})
+		if user is None:
+			return None
+		return User(user['_user_name'], user['_user_email'], user['_phone_carrier'], user['_notification_preference'], user['_user_phone_number'], user['_is_admin'])
 
 # ----------------------------------------
 

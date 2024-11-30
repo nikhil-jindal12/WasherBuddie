@@ -80,32 +80,32 @@ class Machine:
         if next_state == "Out of Order" and user.is_admin == True:
             self._current_state = "Out of Order"
             CRUD.change_machine_state(self.machine_id, "Out of Order")
-            self._who_is_using = None
-            self._start_time = None
-            self._end_time = None
+            self.who_is_using = None
+            self.start_time = None
+            self.end_time = None
             return
         
         if next_state == "Out of Order" and user.is_admin == False:
             raise ValueError("Only admins can set the machine to 'Out of Order'")
         
-        if self._current_state == 'Available' and next_state == 'In Use':
+        if self.current_state == 'Available' and next_state == 'In Use':
             # Starting cycle
-            self._start_time = datetime.now()
+            self.start_time = datetime.now()
             self._current_state = 'In Use'
             CRUD.change_machine_state(self.machine_id, 'In Use')
-            self._who_is_using = user.user_name 
+            self.who_is_using = user.user_name 
             '''
             CHANGE TIME DELTA BASED ON MACHINE TYPE AFTER DEMO
             '''
             time_change = timedelta(minutes=1 if self.machine_type == 'Washer' else 1)
-            self._end_time = self.start_time + time_change
-        elif self._current_state == 'In Use' and next_state == 'Available':
+            self.end_time = self.start_time + time_change
+        elif self.current_state == 'In Use' and next_state == 'Available':
             # Ending cycle
             self._current_state = 'Available'
             CRUD.change_machine_state(self.machine_id, 'Available')
-            self._who_is_using = None  
-            self._end_time = None
-            self._start_time = None
+            self.who_is_using = None  
+            self.end_time = None
+            self.start_time = None
         else:
             raise ValueError("Invalid state transition")
 
@@ -120,14 +120,14 @@ class Machine:
         return self._start_time
 
     @start_time.setter
-    def start_time(self, start_time:Optional[Union[datetime, None]]=None):
+    def start_time(self, start_time:Union[datetime, None]):
         """
         Sets the time the machine cycle was started
 
         Args:
-            start_time (datetime, optional): Specific time. Defaults to datetime.now().
+            start_time (datetime, None): Specific time or empty
         """
-        self._start_time = start_time if start_time else datetime.now()
+        self._start_time = start_time
         from mongoDB.CRUD_api import Database_Manager
         CRUD = Database_Manager()
         CRUD.change_machine_start_time(self.machine_id, self._start_time)
