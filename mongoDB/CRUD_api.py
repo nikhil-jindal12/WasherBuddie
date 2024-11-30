@@ -20,7 +20,7 @@ class Database_Manager:
 		Connects to the MongoDB database and returns the database object
 		"""
 		load_dotenv(find_dotenv())
-		password = "APswe393proj"
+		password = os.environ.get("MONGODB_PWD")
 		connection_string = f"mongodb+srv://WasherBuddie:{password}@washerbuddie.2izth.mongodb.net/?retryWrites=true&w=majority&appName=WasherBuddie"
 		client = MongoClient(connection_string)
 		washerbuddie_db = client.WasherBuddie
