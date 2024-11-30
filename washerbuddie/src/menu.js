@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './Menu.css';
+import './menu.css';
 
 function Menu() {
   const [isOpen, setIsOpen] = useState(false);

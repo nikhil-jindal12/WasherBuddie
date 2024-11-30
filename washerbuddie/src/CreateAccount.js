@@ -6,6 +6,7 @@ import Header from './Header';
 // import { createUser } from './api';
 import './App.css';
 
+{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
 
 function CreateAccount() {
   const [email, setEmail] = useState('');
