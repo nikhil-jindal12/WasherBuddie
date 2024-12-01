@@ -136,7 +136,7 @@ function UserPreferences() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          code: 1, // Code for updating the password
+          code: 3, // Code for updating the password
           value: notification, // The new password
         }),
       });
