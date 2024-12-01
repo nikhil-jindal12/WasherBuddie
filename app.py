@@ -1,6 +1,7 @@
 from flask import Flask, session, request, jsonify, send_from_directory
 from src.Service_Layer.Interaction_Manager import Interaction_Manager
 from mongoDB.CRUD_api import Database_Manager
+import bcrypt
 from src.Service_Layer.User import User
 import os
 from flask_cors import CORS
@@ -17,6 +18,29 @@ interaction_manager = Interaction_Manager()
 
 
 # API routes
+@app.route('/update', methods=['POST'])
+def update():
+    try:
+        data = request.json
+        user_name = session.get('user_name') or data.get('user_name')
+        code = data.get("code")
+        value = data.get("value")
+
+        if not user_name or code is None or not value:
+            return jsonify({"success": False, "error": "Invalid input"}), 400
+
+        # Perform the update
+        result = interaction_manager.user_update(user_name, code, value)
+
+        # Check if the update was successful
+        if result:
+            return jsonify({"success": True, "message": "Update successful"}), 200
+        else:
+            return jsonify({"success": False, "error": "Update failed"}), 500
+    except Exception as e:
+        app.logger.error(f"Error in update endpoint: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
 
 
 

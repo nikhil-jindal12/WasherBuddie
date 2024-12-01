@@ -14,40 +14,148 @@ function UserPreferences() {
   const [notification, setNotification] = useState('email');
   const navigate = useNavigate();
 
-  const handleEmailUpdate = (e) => {
+  const handleEmailUpdate = async (e) => {
     e.preventDefault();
     if (email !== reEmail) {
       toast.error('Emails do not match!', { position: toast.POSITION.TOP_RIGHT });
       return;
     }
-    // Logic to update email
-    toast.success('Email updated successfully!', { position: toast.POSITION.TOP_RIGHT });
+    try {
+      // Make the POST request to the /update endpoint
+      const response = await fetch('/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          code: 0, // Code for updating the password
+          value: email, // The new password
+        }),
+      });
+  
+      // Parse the JSON response
+      const result = await response.json();
+  
+      // Handle response success or failure
+      if (response.ok && result.success) {
+        toast.success('Email updated successfully!', { position: toast.POSITION.TOP_RIGHT });
+      } else {
+        const errorMessage = result.error || 'Password change failed. Please try again.';
+        toast.error(errorMessage, { position: toast.POSITION.TOP_RIGHT });
+      }
+    } catch (err) {
+      // Handle fetch or network errors
+      const networkError = 'An error occurred while updating the password. Please try again.';
+      toast.error(networkError, { position: toast.POSITION.TOP_RIGHT });
+    }
   };
 
-  const handlePasswordUpdate = (e) => {
+  const handlePasswordUpdate = async (e) => {
     e.preventDefault();
+  
+    // Check if passwords match
     if (password !== rePassword) {
       toast.error('Passwords do not match!', { position: toast.POSITION.TOP_RIGHT });
       return;
     }
-    // Logic to update password
-    toast.success('Password updated successfully!', { position: toast.POSITION.TOP_RIGHT });
+  
+    try {
+      // Make the POST request to the /update endpoint
+      const response = await fetch('/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          code: 1, // Code for updating the password
+          value: password, // The new password
+        }),
+      });
+  
+      // Parse the JSON response
+      const result = await response.json();
+  
+      // Handle response success or failure
+      if (response.ok && result.success) {
+        toast.success('Password updated successfully!', { position: toast.POSITION.TOP_RIGHT });
+      } else {
+        const errorMessage = result.error || 'Password change failed. Please try again.';
+        toast.error(errorMessage, { position: toast.POSITION.TOP_RIGHT });
+      }
+    } catch (err) {
+      // Handle fetch or network errors
+      const networkError = 'An error occurred while updating the password. Please try again.';
+      toast.error(networkError, { position: toast.POSITION.TOP_RIGHT });
+    }
   };
+  
 
-  const handlePhoneUpdate = (e) => {
+  const handlePhoneUpdate = async (e) => {
     e.preventDefault();
     if (phone !== rePhone) {
       toast.error('Phone numbers do not match!', { position: toast.POSITION.TOP_RIGHT });
       return;
     }
-    // Logic to update phone number
-    toast.success('Phone number updated successfully!', { position: toast.POSITION.TOP_RIGHT });
+    try {
+      // Make the POST request to the /update endpoint
+      const response = await fetch('/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          code: 2, // Code for updating the password
+          value: phone, // The new password
+        }),
+      });
+  
+      // Parse the JSON response
+      const result = await response.json();
+  
+      // Handle response success or failure
+      if (response.ok && result.success) {
+        toast.success('Phone number updated successfully!', { position: toast.POSITION.TOP_RIGHT });
+      } else {
+        const errorMessage = result.error || 'Password change failed. Please try again.';
+        toast.error(errorMessage, { position: toast.POSITION.TOP_RIGHT });
+      }
+    } catch (err) {
+      // Handle fetch or network errors
+      const networkError = 'An error occurred while updating the phone number. Please try again.';
+      toast.error(networkError, { position: toast.POSITION.TOP_RIGHT });
+    }
   };
 
-  const handleNotificationUpdate = (e) => {
+  const handleNotificationUpdate = async (e) => {
     e.preventDefault();
-    // Logic to update notification settings
-    toast.success('Notification settings updated successfully!', { position: toast.POSITION.TOP_RIGHT });
+    try {
+      // Make the POST request to the /update endpoint
+      const response = await fetch('/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          code: 1, // Code for updating the password
+          value: notification, // The new password
+        }),
+      });
+  
+      // Parse the JSON response
+      const result = await response.json();
+  
+      // Handle response success or failure
+      if (response.ok && result.success) {
+        toast.success('Notification method updated successfully!', { position: toast.POSITION.TOP_RIGHT });
+      } else {
+        const errorMessage = result.error || 'Notification method change failed. Please try again.';
+        toast.error(errorMessage, { position: toast.POSITION.TOP_RIGHT });
+      }
+    } catch (err) {
+      // Handle fetch or network errors
+      const networkError = 'An error occurred while updating the notification method. Please try again.';
+      toast.error(networkError, { position: toast.POSITION.TOP_RIGHT });
+    }
   };
 
   const handleAdminAccess = () => {
@@ -140,8 +248,8 @@ function UserPreferences() {
                 value={notification}
                 onChange={(e) => setNotification(e.target.value)}
               >
-                <option value="email">Email</option>
-                <option value="phone">Phone</option>
+                <option value="Email">Email</option>
+                <option value="Phone">Phone</option>
                 <option value="off">Off</option>
               </select>
             </label>

@@ -205,6 +205,60 @@ class Database_Manager:
 	
 		collection = self.setup_connection().Users
 		collection.find_one_and_replace({"_user_name": old_user.user_name}, new_user.__dict__)
+  
+
+
+	def user_update(self, user_name, code, value):
+		"""
+		Updates a specific field of a user document in the database.
+
+		Args:
+			user_name (str): The current username of the user to update.
+			code (int): The code indicating which field to update.
+			value (str): The new value for the specified field.
+
+		Raises:
+			TypeError: If inputs are not of the correct type.
+
+		Returns:
+			bool: True if the update was successful, False otherwise.
+		"""
+		if not isinstance(user_name, str) or not isinstance(code, int) or not isinstance(value, str):
+			raise TypeError("Invalid input types. Expected str for user_name and value, int for code.")
+
+		# Map codes to the corresponding fields
+		field_mapping = {
+			0: "_user_email",
+			1: "_password",
+			2: "_user_phone_number",
+			3: "_notification_preference"
+		}
+
+		# Validate the code
+		if code not in field_mapping:
+			raise ValueError("Invalid code. Must be one of 0, 1, 2, or 3.")
+
+		# Get the field to update
+		field_to_update = field_mapping[code]
+
+		# Update the field in the database
+		collection = self.setup_connection().Users
+		try:
+			update_result = collection.update_one(
+				{"_user_name": user_name},  # Filter by user_name
+				{"$set": {field_to_update: value}}  # Set the new value for the field
+			)
+
+			return update_result.modified_count > 0
+		except Exception as e:
+			print(f"Error updating user: {e}")
+			return False
+
+
+
+
+
+
 	
 	def find_machine_by_id(self, machine_id: int) -> Machine:
 		"""

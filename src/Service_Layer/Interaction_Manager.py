@@ -271,7 +271,8 @@ class Interaction_Manager:
 		
 
 	
-		
+	def user_update(self, user_name, code, value):
+		return Database_Manager().user_update(user_name, code, value)		
 
 	def get_user(self, email):
 		return Database_Manager().find_user_by_email(email)
