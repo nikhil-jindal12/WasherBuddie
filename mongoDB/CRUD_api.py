@@ -339,6 +339,33 @@ class Database_Manager:
 		collection = self.setup_connection().Users
 		user = collection.find_one({"_id": user_id})
 		return User(user['_user_name'], user['_user_email'], user['_phone_carrier'], user['_notification_preference'], user['_user_phone_number'], user['_is_admin'])
+	def find_user_by_email(self, email):
+		"""
+		Finds a user by their email.
+
+		Args:
+			email (str): Email of the user to be found.
+
+		Returns:
+			dict: JSON-friendly dictionary with user details if found, otherwise None.
+		"""
+		collection = self.setup_connection().Users  # Connect to the Users collection
+		user = collection.find_one({"_user_email": email})  # Query for the user by email
+
+		if user:  # Check if a user was found
+			# Convert the user attributes into a JSON-friendly dictionary
+			user_info = {
+				"user_name": user["_user_name"],
+				"email": user["_user_email"],
+				"phone_carrier": user["_phone_carrier"],
+				"notification_preference": user["_notification_preference"],
+				"phone_number": user["_user_phone_number"],
+				"is_admin": user["_is_admin"]
+			}
+			return user_info
+		else:
+			# Return None if no user was found
+			return None
 
 	def validate_user(self, user_email: str, user_password: str) -> bool:
 		"""

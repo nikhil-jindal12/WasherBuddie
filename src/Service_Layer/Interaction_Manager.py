@@ -271,3 +271,7 @@ class Interaction_Manager:
 		
 
 	
+		
+
+	def get_user(self, email):
+		return Database_Manager().find_user_by_email(email)
