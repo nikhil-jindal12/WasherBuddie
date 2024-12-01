@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify'; // Import toast if not already
 import Header from './Header';
 import Menu from './menu';
 import './App.css';
@@ -59,9 +60,11 @@ function HomePage() {
         return () => clearInterval(interval);
     }, []); // Empty dependency array ensures this runs only on mount/unmount
 
+
+
     const handleStartEndUse = async (id) => {
         const machine = machines.find((m) => m.id === id);
-
+    
         if (machine) {
             if (machine.status === 'Available') {
                 try {
@@ -76,7 +79,7 @@ function HomePage() {
                             user_name: userName, // Replace with the actual user's name
                         }),
                     });
-
+    
                     const result = await response.json();
                     if (response.ok && result.success) {
                         console.log('Session created:', result.message);
@@ -88,10 +91,16 @@ function HomePage() {
                             )
                         );
                     } else {
+                        // Notify user to sign in if session creation fails
+                        const errorMessage =
+                            result.error || 'Session creation failed. Please sign in first.';
                         console.error('Failed to create session:', result.error);
+                        toast.error(errorMessage, { position: toast.POSITION.TOP_RIGHT });
                     }
                 } catch (error) {
-                    console.error('Error creating session:', error);
+                    toast.error('You must sign in to start a session', {
+                        position: toast.POSITION.TOP_RIGHT,
+                    });
                 }
             } else {
                 // Handle end use (logic for ending a session, if applicable)
@@ -106,6 +115,7 @@ function HomePage() {
             }
         }
     };
+    
 
     const handleLogout = () => {
         navigate('/login');

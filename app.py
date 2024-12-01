@@ -155,6 +155,13 @@ def remove_user():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.clear()
+    
+    return jsonify({"message": "Logged out successfully!"}), 200
+
+
 @app.route('/authenticate_log_in', methods=['POST'])
 def authenticate_log_in():
     data = request.json
