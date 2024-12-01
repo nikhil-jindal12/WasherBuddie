@@ -83,10 +83,14 @@ function HomePage() {
                     const result = await response.json();
                     if (response.ok && result.success) {
                         console.log('Session created:', result.message);
+    
+                        // Set timeRemaining based on machine type
+                        const timeRemaining = machine.type === 'Dryer' ? 60 : 50;
+    
                         setMachines((prevMachines) =>
                             prevMachines.map((m) =>
                                 m.id === id
-                                    ? { ...m, status: 'In Use', timeRemaining: 50 }
+                                    ? { ...m, status: 'In Use', timeRemaining }
                                     : m
                             )
                         );
@@ -115,6 +119,7 @@ function HomePage() {
             }
         }
     };
+    
     
 
     const handleLogout = () => {

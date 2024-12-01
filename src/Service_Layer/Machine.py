@@ -97,7 +97,7 @@ class Machine:
             '''
             CHANGE TIME DELTA BASED ON MACHINE TYPE AFTER DEMO
             '''
-            time_change = timedelta(minutes=1 if self.machine_type == 'Washer' else 1)
+            time_change = timedelta(minutes=50 if self.machine_type == 'Washer' else 60)
             self.end_time = self.start_time + time_change
         elif self.current_state == 'In Use' and next_state == 'Available':
             # Ending cycle

@@ -10,6 +10,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow-y: auto; /* Enable vertical scrolling */
   min-height: 100vh;
 }
 
@@ -109,13 +110,7 @@ body {
   flex-wrap: wrap;
 }
 
-.machine-tile {
-  border: 1px solid #ccc;
-  padding: 16px;
-  margin: 8px;
-  width: 400px;
-  text-align: center;
-}
+
 
 header div {
   display: flex;
