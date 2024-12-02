@@ -16,7 +16,7 @@ class TestUser(unittest.TestCase):
     def test_user_invalid_name(self):
         # Test invalid name without first and last
         with pytest.raises(ValueError, match="No username was provided"):
-            User("Jaydon", "jaydonfaal@gmail.com", "Verizon", "Email", 6269935329)
+            User("", "jaydonfaal@gmail.com", "Verizon", "Email", 6269935329)
 
     def test_user_invalid_email(self):
         # Test invalid email format
