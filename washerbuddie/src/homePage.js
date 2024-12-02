@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify'; // Import toast if not already
+import { toast } from 'react-toastify';
 import Header from './Header';
 import Menu from './menu';
 import './App.css';
@@ -12,32 +12,28 @@ function HomePage() {
 
     const fetchMachines = async () => {
         try {
-            const response = await fetch('/get_machines'); // Replace with your API URL
+            const response = await fetch('/get_machines');
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const data = await response.json();
-            console.log('Fetched Data:', data);
-    
-            // Access DB_machines array and map it to the required format
+
             if (Array.isArray(data.DB_machines)) {
                 const machineArray = data.DB_machines.map((machine) => {
-                    // Parse start and end times
                     const startTime = new Date(machine._start_time);
                     const endTime = new Date(machine._end_time);
                     const now = new Date();
-    
+
                     let timeRemaining = 0;
                     if (machine._current_state === 'In Use' && now < endTime) {
-                        // Calculate remaining time in minutes
                         timeRemaining = Math.max(0, Math.round((endTime - now) / 60000));
                     }
-    
+
                     return {
-                        id: machine._machine_id, // Access _machine_id for the id
-                        type: machine._machine_type, // Access _machine_type for the type
-                        status: machine._current_state, // Access _current_state for the status
-                        timeRemaining, // Calculated time remaining
+                        id: machine._machine_id,
+                        type: machine._machine_type,
+                        status: machine._current_state,
+                        timeRemaining,
                     };
                 });
                 setMachines(machineArray);
@@ -50,43 +46,76 @@ function HomePage() {
     };
 
     useEffect(() => {
-        // Fetch machines on component mount
         fetchMachines();
 
-        // Set up an interval to fetch machines every minute
-        const interval = setInterval(fetchMachines, 60000); // 60000ms = 1 minute
+        const interval = setInterval(() => {
+            setMachines((prevMachines) =>
+                prevMachines.map((machine) => {
+                    if (machine.status === 'In Use' && machine.timeRemaining > 0) {
+                        const newTimeRemaining = machine.timeRemaining - 1;
 
-        // Cleanup interval on component unmount
+                        // Call end_session when timeRemaining reaches 0
+                        if (newTimeRemaining === 0) {
+                            endSession(machine.id);
+                        }
+
+                        return { ...machine, timeRemaining: newTimeRemaining };
+                    }
+                    return machine;
+                })
+            );
+        }, 60000); // Decrement timeRemaining every minute
+
         return () => clearInterval(interval);
-    }, []); // Empty dependency array ensures this runs only on mount/unmount
+    }, []);
 
+    const endSession = async (machineId) => {
+        try {
+            const response = await fetch('/end_session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    machine_id: machineId,
+                    user_name: userName,
+                }),
+            });
 
+            const result = await response.json();
+            if (response.ok && result.success) {
+                console.log(`Session ended for machine ${machineId}: ${result.message}`);
+                setMachines((prevMachines) =>
+                    prevMachines.map((machine) =>
+                        machine.id === machineId
+                            ? { ...machine, status: 'Available', timeRemaining: 0 }
+                            : machine
+                    )
+                );
+            } else {
+                console.error(`Failed to end session for machine ${machineId}:`, result.error);
+            }
+        } catch (error) {
+            console.error('Error ending session:', error);
+        }
+    };
 
     const handleStartEndUse = async (id) => {
         const machine = machines.find((m) => m.id === id);
-    
+
         if (machine) {
             if (machine.status === 'Available') {
                 try {
-                    // Make a POST request to /create_session
                     const response = await fetch('/create_session', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             machine_id: machine.id,
-                            user_name: userName, // Replace with the actual user's name
+                            user_name: userName,
                         }),
                     });
-    
+
                     const result = await response.json();
                     if (response.ok && result.success) {
-                        console.log('Session created:', result.message);
-    
-                        // Set timeRemaining based on machine type
                         const timeRemaining = machine.type === 'Dryer' ? 60 : 50;
-    
                         setMachines((prevMachines) =>
                             prevMachines.map((m) =>
                                 m.id === id
@@ -95,32 +124,16 @@ function HomePage() {
                             )
                         );
                     } else {
-                        // Notify user to sign in if session creation fails
-                        const errorMessage =
-                            result.error || 'Session creation failed. Please sign in first.';
-                        console.error('Failed to create session:', result.error);
-                        toast.error(errorMessage, { position: toast.POSITION.TOP_RIGHT });
+                        toast.error(result.error || 'Failed to create session.');
                     }
                 } catch (error) {
-                    toast.error('You must sign in to start a session', {
-                        position: toast.POSITION.TOP_RIGHT,
-                    });
+                    toast.error('You must sign in to start a session.');
                 }
             } else {
-                // Handle end use (logic for ending a session, if applicable)
-                console.log(`Ending use for machine ${id}`);
-                setMachines((prevMachines) =>
-                    prevMachines.map((m) =>
-                        m.id === id
-                            ? { ...m, status: 'Available', timeRemaining: 0 }
-                            : m
-                    )
-                );
+                endSession(id);
             }
         }
     };
-    
-    
 
     const handleLogout = () => {
         navigate('/login');
@@ -138,9 +151,9 @@ function HomePage() {
                         </h3>
                         <p>Status: {machine.status}</p>
                         <p>Time Remaining: {machine.timeRemaining} mins</p>
-                        <button 
-                            onClick={() => handleStartEndUse(machine.id)} 
-                            disabled={machine.status !== 'Available'} 
+                        <button
+                            onClick={() => handleStartEndUse(machine.id)}
+                            disabled={machine.status !== 'Available'}
                             style={{
                                 backgroundColor: machine.status === 'Available' ? '#007bff' : '#d3d3d3',
                                 color: machine.status === 'Available' ? '#fff' : '#808080',
