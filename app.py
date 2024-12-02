@@ -263,6 +263,7 @@ def notify_user():
 @app.route('/create-account')
 @app.route('/user-preferences')
 @app.route('/forgot-password')
+@app.route('/admin')
 @app.route('/<path:path>')
 def catch_all(path=None):
     return app.send_static_file('index.html')

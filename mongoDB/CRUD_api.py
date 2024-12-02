@@ -358,6 +358,7 @@ class Database_Manager:
 		"""
 		collection = self.setup_connection().Machines
 		collection.update_one({"_machine_id": machine_id}, {"$set": {"_end_time": new_end_time}})
+		collection.update_one({"_machine_id": machine_id}, {"$set": {"_current_state": "Available"}})
 		if (collection.find_one({"_machine_id": machine_id}) == None):
 			return False
 		return True

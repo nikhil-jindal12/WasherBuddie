@@ -178,7 +178,7 @@ class Interaction_Manager:
   
 		return True
 		
-	def end_session(self, machine_id: int, user: User) -> bool:
+	def end_session(self, machine_id: int):
 		"""
 		Sets the status for a machine to 'Available' and removes the user from the machine
 
@@ -192,17 +192,11 @@ class Interaction_Manager:
 		Returns:
 			None: if the machine is successfully set to 'Available'
 		"""
-		if not (isinstance(machine_id, int) and isinstance(user, User)):
+		if not (isinstance(machine_id, int)):
 			raise TypeError()
 
 		# machine = self.Machines[machine_id]
-		machine = Database_Manager().find_machine_by_id(machine_id)
-
-		if machine.who_is_using != user.user_name:
-			raise PermissionError()
-
-		machine.current_state = ('Available', user)
-		return True
+		return Database_Manager().change_machine_end_time(machine_id, None)
 	
 	def set_out_of_order(self, machine_id: int, user: User) -> bool:
 		"""
