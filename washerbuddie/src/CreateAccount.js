@@ -16,7 +16,7 @@ function CreateAccount() {
     e.preventDefault();
 
     const userData = {
-      user_name: "John Doe", // Using email prefix as username
+      user_name: email.split("@")[0], // Using email prefix as username
       notification_preference: 'Email', // Assuming email notifications by default
       user_phone_number: phone,
       user_email: email,

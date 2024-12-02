@@ -20,7 +20,7 @@ class User:
         """
         
         # checks if the user input their first and last name
-        if len(user_name.split()) == 2:
+        if len(user_name) >= 1:
             self._user_name = user_name
         else:
             raise ValueError("No username was provided")
@@ -36,7 +36,6 @@ class User:
             self._user_phone_number = None
             self._phone_carrier = None
             self.user_email(user_email)
-            print("hi")
         else:
             raise ValueError("Invalid email address was given")
         
