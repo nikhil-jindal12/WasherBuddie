@@ -72,7 +72,7 @@ class Machine:
         next_state = value[0]
         user = value[1]
         
-        if self.current_state == 'Out of Order' and not user.is_admin:
+        if self._current_state == 'Out of Order' and not user.is_admin:
             raise ValueError("Machine is out of order and cannot be changed")
         
         CRUD = Database_Manager()
@@ -83,6 +83,10 @@ class Machine:
             self._who_is_using = None
             self._start_time = None
             self._end_time = None
+            CRUD.change_machine_end_time(self._machine_id, self._end_time)
+            CRUD.change_machine_state(self._machine_id, next_state)
+            CRUD.change_machine_start_time(self._machine_id, self._start_time)
+            CRUD.change_machine_user(self._machine_id, self._who_is_using)
             return
         
         if next_state == "Out of Order" and user.is_admin == False:
@@ -92,13 +96,17 @@ class Machine:
             # Starting cycle
             self._start_time = datetime.now()
             self._current_state = 'In Use'
-            CRUD.change_machine_state(self.machine_id, 'In Use')
             self._who_is_using = user.user_name
             '''
             CHANGE TIME DELTA BASED ON MACHINE TYPE AFTER DEMO
             '''
             time_change = timedelta(minutes=50 if self.machine_type == 'Washer' else 60)
             self._end_time = self.start_time + time_change
+            
+            CRUD.change_machine_end_time(self._machine_id, self._end_time)
+            CRUD.change_machine_state(self._machine_id, next_state)
+            CRUD.change_machine_start_time(self._machine_id, self._start_time)
+            CRUD.change_machine_user(self._machine_id, self._who_is_using)
         elif self._current_state == 'In Use' and next_state == 'Available':
             # Ending cycle
             self._current_state = 'Available'
@@ -106,6 +114,10 @@ class Machine:
             self._who_is_using = None  
             self._end_time = None
             self._start_time = None
+            CRUD.change_machine_end_time(self._machine_id, self._end_time)
+            CRUD.change_machine_state(self._machine_id, next_state)
+            CRUD.change_machine_start_time(self._machine_id, self._start_time)
+            CRUD.change_machine_user(self._machine_id, self._who_is_using)
         else:
             raise ValueError("Invalid state transition")
 
