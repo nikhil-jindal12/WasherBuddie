@@ -161,6 +161,11 @@ def logout():
     
     return jsonify({"message": "Logged out successfully!"}), 200
 
+@app.route('/get_admin', methods=['GET'])
+def get_admin():
+    return jsonify({"admin": session['is_admin']}), 200
+    
+
 
 @app.route('/authenticate_log_in', methods=['POST'])
 def authenticate_log_in():

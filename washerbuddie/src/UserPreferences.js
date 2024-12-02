@@ -1,166 +1,146 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Header from './Header';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Header from "./Header";
 
 function UserPreferences() {
-  const [email, setEmail] = useState('');
-  const [reEmail, setReEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [rePassword, setRePassword] = useState('');
-  const [phone, setPhone] = useState('');
-  const [rePhone, setRePhone] = useState('');
-  const [notification, setNotification] = useState('email');
+  const [email, setEmail] = useState("");
+  const [reEmail, setReEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rePassword, setRePassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [rePhone, setRePhone] = useState("");
+  const [notification, setNotification] = useState("email");
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchAdminStatus = async () => {
+      try {
+        const response = await fetch("/get_admin");
+        const data = await response.json();
+        if (response.ok) {
+          setIsAdmin(data.admin);
+        } else {
+          console.error("Failed to fetch admin status:", data.error);
+        }
+      } catch (err) {
+        console.error("Error fetching admin status:", err);
+      }
+    };
+
+    fetchAdminStatus();
+  }, []);
 
   const handleEmailUpdate = async (e) => {
     e.preventDefault();
     if (email !== reEmail) {
-      toast.error('Emails do not match!', { position: toast.POSITION.TOP_RIGHT });
+      toast.error("Emails do not match!", { position: toast.POSITION.TOP_RIGHT });
       return;
     }
     try {
-      // Make the POST request to the /update endpoint
-      const response = await fetch('/update', {
-        method: 'POST',
+      const response = await fetch("/update", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          code: 0, // Code for updating the password
-          value: email, // The new password
-        }),
+        body: JSON.stringify({ code: 0, value: email }),
       });
-  
-      // Parse the JSON response
+
       const result = await response.json();
-  
-      // Handle response success or failure
       if (response.ok && result.success) {
-        toast.success('Email updated successfully!', { position: toast.POSITION.TOP_RIGHT });
+        toast.success("Email updated successfully!", { position: toast.POSITION.TOP_RIGHT });
       } else {
-        const errorMessage = result.error || 'Password change failed. Please try again.';
-        toast.error(errorMessage, { position: toast.POSITION.TOP_RIGHT });
+        toast.error(result.error || "Failed to update email.", { position: toast.POSITION.TOP_RIGHT });
       }
     } catch (err) {
-      // Handle fetch or network errors
-      const networkError = 'An error occurred while updating the password. Please try again.';
-      toast.error(networkError, { position: toast.POSITION.TOP_RIGHT });
+      toast.error("Error updating email. Please try again.", { position: toast.POSITION.TOP_RIGHT });
     }
   };
 
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();
-  
-    // Check if passwords match
     if (password !== rePassword) {
-      toast.error('Passwords do not match!', { position: toast.POSITION.TOP_RIGHT });
+      toast.error("Passwords do not match!", { position: toast.POSITION.TOP_RIGHT });
       return;
     }
-  
     try {
-      // Make the POST request to the /update endpoint
-      const response = await fetch('/update', {
-        method: 'POST',
+      const response = await fetch("/update", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          code: 1, // Code for updating the password
-          value: password, // The new password
-        }),
+        body: JSON.stringify({ code: 1, value: password }),
       });
-  
-      // Parse the JSON response
+
       const result = await response.json();
-  
-      // Handle response success or failure
       if (response.ok && result.success) {
-        toast.success('Password updated successfully!', { position: toast.POSITION.TOP_RIGHT });
+        toast.success("Password updated successfully!", { position: toast.POSITION.TOP_RIGHT });
       } else {
-        const errorMessage = result.error || 'Password change failed. Please try again.';
-        toast.error(errorMessage, { position: toast.POSITION.TOP_RIGHT });
+        toast.error(result.error || "Failed to update password.", { position: toast.POSITION.TOP_RIGHT });
       }
     } catch (err) {
-      // Handle fetch or network errors
-      const networkError = 'An error occurred while updating the password. Please try again.';
-      toast.error(networkError, { position: toast.POSITION.TOP_RIGHT });
+      toast.error("Error updating password. Please try again.", { position: toast.POSITION.TOP_RIGHT });
     }
   };
-  
 
   const handlePhoneUpdate = async (e) => {
     e.preventDefault();
     if (phone !== rePhone) {
-      toast.error('Phone numbers do not match!', { position: toast.POSITION.TOP_RIGHT });
+      toast.error("Phone numbers do not match!", { position: toast.POSITION.TOP_RIGHT });
       return;
     }
     try {
-      // Make the POST request to the /update endpoint
-      const response = await fetch('/update', {
-        method: 'POST',
+      const response = await fetch("/update", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          code: 2, // Code for updating the password
-          value: phone, // The new password
-        }),
+        body: JSON.stringify({ code: 2, value: phone }),
       });
-  
-      // Parse the JSON response
+
       const result = await response.json();
-  
-      // Handle response success or failure
       if (response.ok && result.success) {
-        toast.success('Phone number updated successfully!', { position: toast.POSITION.TOP_RIGHT });
+        toast.success("Phone number updated successfully!", { position: toast.POSITION.TOP_RIGHT });
       } else {
-        const errorMessage = result.error || 'Password change failed. Please try again.';
-        toast.error(errorMessage, { position: toast.POSITION.TOP_RIGHT });
+        toast.error(result.error || "Failed to update phone number.", { position: toast.POSITION.TOP_RIGHT });
       }
     } catch (err) {
-      // Handle fetch or network errors
-      const networkError = 'An error occurred while updating the phone number. Please try again.';
-      toast.error(networkError, { position: toast.POSITION.TOP_RIGHT });
+      toast.error("Error updating phone number. Please try again.", { position: toast.POSITION.TOP_RIGHT });
     }
   };
 
   const handleNotificationUpdate = async (e) => {
     e.preventDefault();
     try {
-      // Make the POST request to the /update endpoint
-      const response = await fetch('/update', {
-        method: 'POST',
+      const response = await fetch("/update", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          code: 3, // Code for updating the password
-          value: notification, // The new password
-        }),
+        body: JSON.stringify({ code: 3, value: notification }),
       });
-  
-      // Parse the JSON response
+
       const result = await response.json();
-  
-      // Handle response success or failure
       if (response.ok && result.success) {
-        toast.success('Notification method updated successfully!', { position: toast.POSITION.TOP_RIGHT });
+        toast.success("Notification method updated successfully!", { position: toast.POSITION.TOP_RIGHT });
       } else {
-        const errorMessage = result.error || 'Notification method change failed. Please try again.';
-        toast.error(errorMessage, { position: toast.POSITION.TOP_RIGHT });
+        toast.error(result.error || "Failed to update notification method.", { position: toast.POSITION.TOP_RIGHT });
       }
     } catch (err) {
-      // Handle fetch or network errors
-      const networkError = 'An error occurred while updating the notification method. Please try again.';
-      toast.error(networkError, { position: toast.POSITION.TOP_RIGHT });
+      toast.error("Error updating notification method. Please try again.", { position: toast.POSITION.TOP_RIGHT });
     }
   };
 
   const handleAdminAccess = () => {
-    // Logic to access admin settings
-    navigate('/admin');
+    if (isAdmin) {
+      navigate("/admin");
+    } else {
+      toast.error("You do not have admin permissions.", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
   };
 
   return (
@@ -258,7 +238,20 @@ function UserPreferences() {
         </div>
         <div className="preferences-box">
           <h2>Admin Settings</h2>
-          <button onClick={handleAdminAccess}>Access Admin Settings</button>
+          <button
+            onClick={handleAdminAccess}
+            disabled={!isAdmin}
+            style={{
+              backgroundColor: isAdmin ? "blue" : "gray",
+              cursor: isAdmin ? "pointer" : "not-allowed",
+              color: "#fff",
+              padding: "10px 20px",
+              border: "none",
+              borderRadius: "5px",
+            }}
+          >
+            Access Admin Settings
+          </button>
         </div>
       </div>
       <ToastContainer />
