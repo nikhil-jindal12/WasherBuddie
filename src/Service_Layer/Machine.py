@@ -80,32 +80,32 @@ class Machine:
         if next_state == "Out of Order" and user.is_admin == True:
             self._current_state = "Out of Order"
             CRUD.change_machine_state(self.machine_id, "Out of Order")
-            self.who_is_using = None
-            self.start_time = None
-            self.end_time = None
+            self._who_is_using = None
+            self._start_time = None
+            self._end_time = None
             return
         
         if next_state == "Out of Order" and user.is_admin == False:
             raise ValueError("Only admins can set the machine to 'Out of Order'")
         
-        if self.current_state == 'Available' and next_state == 'In Use':
+        if self._current_state == 'Available' and next_state == 'In Use':
             # Starting cycle
-            self.start_time = datetime.now()
+            self._start_time = datetime.now()
             self._current_state = 'In Use'
             CRUD.change_machine_state(self.machine_id, 'In Use')
-            self.who_is_using = user.user_name 
+            self._who_is_using = user.user_name
             '''
             CHANGE TIME DELTA BASED ON MACHINE TYPE AFTER DEMO
             '''
             time_change = timedelta(minutes=50 if self.machine_type == 'Washer' else 60)
-            self.end_time = self.start_time + time_change
-        elif self.current_state == 'In Use' and next_state == 'Available':
+            self._end_time = self.start_time + time_change
+        elif self._current_state == 'In Use' and next_state == 'Available':
             # Ending cycle
             self._current_state = 'Available'
             CRUD.change_machine_state(self.machine_id, 'Available')
-            self.who_is_using = None  
-            self.end_time = None
-            self.start_time = None
+            self._who_is_using = None  
+            self._end_time = None
+            self._start_time = None
         else:
             raise ValueError("Invalid state transition")
 

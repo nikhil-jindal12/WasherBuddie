@@ -159,7 +159,7 @@ class Interaction_Manager:
 		
 		# machine = self.Machines[machine_id]
 		machine = Database_Manager().find_machine_by_id(machine_id)
-		machine.current_state = ("In Use", user)
+		machine.current_state = ('In Use', user)
   
 		def monitor_session():
 			now = datetime.datetime.now()

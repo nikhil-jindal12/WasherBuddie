@@ -284,23 +284,30 @@ class Database_Manager:
 
 	def change_machine_state(self, machine_id: int, new_state: Union[str, None]) -> bool:
 		"""
-		Changes the state of a machine
+		Changes the state of a machine.
 
 		Args:
-			machine_id (int): machine's id number
-			new_state (str): machine's new state
+			machine_id (int): Machine's ID number.
+			new_state (Union[str, None]): Machine's new state.
 
 		Raises:
-			TypeError: if the parameters are not of valid types
+			TypeError: If the parameters are not of valid types.
 
 		Returns:
-			boolean: True if the machine's state was changed, False otherwise
+			bool: True if the machine's state was successfully changed, False otherwise.
 		"""
+		if not isinstance(machine_id, int) or not isinstance(new_state, (str, type(None))):
+			raise TypeError("Invalid types for 'machine_id' or 'new_state'.")
+
 		collection = self.setup_connection().Machines
 		collection.update_one({"_machine_id": machine_id}, {"$set": {"_current_state": new_state}})
 		if (collection.find_one({"_machine_id": machine_id}) == None):
 			return False
 		return True
+
+		# Check if the update was successful
+		return update_result.modified_count > 0
+
 
 	def change_machine_user(self, machine_id: int, new_user: Union[str, None]) -> bool:
 		"""
