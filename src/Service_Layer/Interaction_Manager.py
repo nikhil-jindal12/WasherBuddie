@@ -246,6 +246,7 @@ class Interaction_Manager:
 		machine.current_state = ('return', user)
 		return True
 
+
 	def get_status(self, machine_id: int) -> str:
 		"""
 		Returns the current status of the machine

@@ -229,7 +229,7 @@ def set_out_of_order():
         return jsonify({'success': success, 'message': 'Machine status updated successfully' if success else 'Failed to update machine status'})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
-    
+
 @app.route('/return_to_service', methods=['POST'])
 def return_to_service():
     data = request.json
@@ -246,6 +246,9 @@ def return_to_service():
         return jsonify({'success': success, 'message': 'Machine status updated successfully' if success else 'Failed to update machine status'})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+ 
+
 
 @app.route('/get_status', methods=['GET'])
 def get_status():
