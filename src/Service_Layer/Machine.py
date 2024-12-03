@@ -74,6 +74,10 @@ class Machine:
         
         if self._current_state == 'Out of Order' and not user.is_admin:
             raise ValueError("Machine is out of order and cannot be changed")
+        if self._current_state == 'Out of Order' and next_state == 'return' and user.is_admin:
+            self._current_state = "Available"
+            CRUD.change_machine_state(self.machine_id, self._current_state)
+            return
         
         CRUD = Database_Manager()
 
