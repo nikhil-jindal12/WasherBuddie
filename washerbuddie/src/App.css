@@ -193,7 +193,9 @@ header button {
   transition: transform 0.2s;
 }
 
-
+.admin-titles{
+  margin-left: 5vw;
+}
 .machine-tile:hover {
   transform: scale(1.05);
 }
