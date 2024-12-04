@@ -112,6 +112,27 @@ body {
 
 
 
+.preferences-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Centers the tiles horizontally */
+  gap: 20px; /* Adds consistent spacing between tiles */
+  width: 100vw;
+  padding: 20px; /* Adds some padding around the container */
+  box-sizing: border-box;
+}
+
+.preferences-box {
+  width: 150px; /* Ensures all tiles have the same width */
+  height: 300px;
+  padding: 20px;
+  border: 1px solid #ccc; /* Optional: Adds a border to each tile */
+  border-radius: 10px; /* Optional: Rounds the tile corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+  background-color: #f9f9f9; /* Background color for the tiles */
+}
+
+
 header div {
   display: flex;
   align-items: center;
@@ -151,6 +172,8 @@ header button {
 .machine-list {
   display: flex;
   flex-wrap: wrap;
+  width: 100vw;
+  justify-content: center;
   gap: 1rem;
   padding: 1rem;
 }
@@ -170,7 +193,9 @@ header button {
   transition: transform 0.2s;
 }
 
-
+.admin-titles{
+  margin-left: 5vw;
+}
 .machine-tile:hover {
   transform: scale(1.05);
 }

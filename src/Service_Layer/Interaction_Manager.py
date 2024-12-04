@@ -222,6 +222,31 @@ class Interaction_Manager:
 		machine.current_state = ('Out of Order', user)
 		return True
 
+	def return_to_service(self, machine_id: int, user: User) -> bool:
+		"""
+		Sets the status of the machine to/from out of order
+
+		Args:
+			machine_id (int): machine to have its status changed
+			user (User): user setting the status of the machine
+   
+		Raises:
+			TypeError: if the parameters are not of type Machine or User
+			PermissionError: if the user is not an admin
+		"""
+		if not (isinstance(machine_id, int) and isinstance(user, User)):
+			raise TypeError()
+
+		if not user.is_admin:
+			raise PermissionError()
+
+		# machine = self.Machines[machine_id]
+		machine = Database_Manager().find_machine_by_id(machine_id)
+  
+		machine.current_state = ('return', user)
+		return True
+
+
 	def get_status(self, machine_id: int) -> str:
 		"""
 		Returns the current status of the machine

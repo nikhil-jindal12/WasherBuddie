@@ -5,49 +5,175 @@ import Menu from './menu';
 import './App.css';
 
 function AdminPage() {
-    const [machines, setMachines] = useState([
-        { id: 1, type: 'Washer', status: 'Available' },
-        { id: 2, type: 'Dryer', status: 'In Use' },
-        { id: 3, type: 'Washer', status: 'Available' },
-    ]);
-    const [users, setUsers] = useState([
-        { id: 1, name: 'test_user1', role: 'User' },
-        { id: 2, name: 'test_user2', role: 'Admin' },
-        { id: 3, name: 'test_user3', role: 'User' },
-    ]);
+    const [machines, setMachines] = useState([]);
+    const [users, setUsers] = useState([]);
     const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    // Handler to set machine out of order
-    const handleSetOutOfOrder = (id) => {
-        setMachines((prevMachines) =>
-            prevMachines.map((m) =>
-                m.id === id ? { ...m, status: 'Out of Order' } : m
-            )
-        );
-    };
-
-    // Handler to delete user account
-    const handleDeleteUser = (id) => {
-        setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
-    };
-
-    // Handler to promote user
-    const handlePromoteUser = (id) => {
-        setUsers((prevUsers) =>
-            prevUsers.map((user) =>
-                user.id === id ? { ...user, role: 'Admin' } : user
-            )
-        );
-    };
-
-    // Handler to send a message
-    const handleSendMessage = () => {
-        if (message.trim()) {
-            alert(`Message sent: ${message}`);
-            setMessage('');
+    // Fetch machine data
+    const fetchMachines = async () => {
+        try {
+            const response = await fetch('/get_machines');
+            if (!response.ok) {
+                throw new Error(`Failed to fetch machines: ${response.statusText}`);
+            }
+            const data = await response.json();
+            if (Array.isArray(data.DB_machines)) {
+                const machineArray = data.DB_machines.map((machine) => ({
+                    id: machine._machine_id,
+                    type: machine._machine_type,
+                    status: machine._current_state,
+                }));
+                setMachines(machineArray);
+            }
+        } catch (error) {
+            console.error('Error fetching machine data:', error);
         }
     };
+
+    // Fetch user data
+    const fetchUsers = async () => {
+        try {
+            const response = await fetch('/get_users');
+            if (!response.ok) {
+                throw new Error(`Failed to fetch users: ${response.statusText}`);
+            }
+            const data = await response.json();
+            if (Array.isArray(data.users)) {
+                const userArray = data.users.map((user) => ({
+                    id: user.id,
+                    name: user.name,
+                    role: user.role,
+                }));
+                setUsers(userArray);
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
+
+    useEffect(() => {
+        const loadData = async () => {
+            await fetchMachines();
+            await fetchUsers();
+            setTimeout(() => setLoading(false), 2000); // Wait for 2 seconds
+        };
+        loadData();
+    }, []);
+
+    // Set machine out of order
+    const handleSetOutOfOrder = async (id) => {
+        try {
+            const response = await fetch('/set_out_of_order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ machine_id: id }),
+            });
+            if (response.ok) {
+                setMachines((prevMachines) =>
+                    prevMachines.map((m) =>
+                        m.id === id ? { ...m, status: 'Out of Order' } : m
+                    )
+                );
+            } else {
+                console.error('Failed to set machine out of order');
+            }
+        } catch (error) {
+            console.error('Error setting machine out of order:', error);
+        }
+    };
+
+    // Return machine to service
+    const handleReturnToService = async (id) => {
+        try {
+            const response = await fetch('/return_to_service', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ machine_id: id }),
+            });
+            if (response.ok) {
+                setMachines((prevMachines) =>
+                    prevMachines.map((m) =>
+                        m.id === id ? { ...m, status: 'Available' } : m
+                    )
+                );
+            } else {
+                console.error('Failed to return machine to service');
+            }
+        } catch (error) {
+            console.error('Error returning machine to service:', error);
+        }
+    };
+
+    // Delete user account
+    const handleDeleteUser = async (id) => {
+        try {
+            const response = await fetch('/delete_user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: id }),
+            });
+            if (response.ok) {
+                setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+            } else {
+                console.error('Failed to delete user');
+            }
+        } catch (error) {
+            console.error('Error deleting user:', error);
+        }
+    };
+
+    // Promote user to admin
+    const handlePromoteUser = async (id) => {
+        try {
+            const response = await fetch('/promote_user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: id }),
+            });
+            if (response.ok) {
+                setUsers((prevUsers) =>
+                    prevUsers.map((user) =>
+                        user.id === id ? { ...user, role: 'Admin' } : user
+                    )
+                );
+            } else {
+                console.error('Failed to promote user');
+            }
+        } catch (error) {
+            console.error('Error promoting user:', error);
+        }
+    };
+
+    // Send message
+    const handleSendMessage = async () => {
+        if (message.trim()) {
+            try {
+                const response = await fetch('/send_message', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message }),
+                });
+                if (response.ok) {
+                    alert('Message sent successfully!');
+                    setMessage('');
+                } else {
+                    console.error('Failed to send message');
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+            }
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="loading-screen">
+                <h2>Page is loading...</h2>
+            </div>
+        );
+    }
 
     return (
         <div>
@@ -56,7 +182,7 @@ function AdminPage() {
             <div className="admin-controls">
                 {/* Machines section */}
                 <div className="section">
-                    <h2>Machines</h2>
+                    <h2 className='admin-titles'>Machines</h2>
                     <div className="machine-list">
                         {machines.map((machine) => (
                             <div key={machine.id} className="machine-tile">
@@ -65,15 +191,18 @@ function AdminPage() {
                                 </h3>
                                 <p>Status: {machine.status}</p>
                                 <button
-                                    onClick={() => handleSetOutOfOrder(machine.id)}
+                                    onClick={
+                                        machine.status === 'Out of Order'
+                                            ? () => handleReturnToService(machine.id)
+                                            : () => handleSetOutOfOrder(machine.id)
+                                    }
                                     style={{
-                                        backgroundColor: machine.status === 'Available' ? '#ff0000' : '#d3d3d3',
-                                        color: machine.status === 'Available' ? '#fff' : '#808080',
-                                        cursor: machine.status === 'Available' ? 'pointer' : 'not-allowed',
+                                        backgroundColor: machine.status === 'Out of Order' ? '#007bff' : '#ff0000',
+                                        color: '#fff',
+                                        cursor: 'pointer',
                                     }}
-                                    disabled={machine.status !== 'Available'}
                                 >
-                                    Set Out of Order
+                                    {machine.status === 'Out of Order' ? 'Return to Service' : 'Set Out of Order'}
                                 </button>
                             </div>
                         ))}
@@ -82,13 +211,16 @@ function AdminPage() {
 
                 {/* Users section */}
                 <div className="section">
-                    <h2>Users</h2>
+                    <h2 className='admin-titles'>Users</h2>
                     <div className="machine-list">
                         {users.map((user) => (
                             <div key={user.id} className="machine-tile">
                                 <h3>{user.name}</h3>
                                 <p>Role: {user.role}</p>
-                                <button onClick={() => handleDeleteUser(user.id)} style={{ backgroundColor: '#ff0000', color: '#fff' }}>
+                                <button
+                                    onClick={() => handleDeleteUser(user.id)}
+                                    style={{ backgroundColor: '#ff0000', color: '#fff' }}
+                                >
                                     Delete Account
                                 </button>
                                 <button
@@ -107,20 +239,15 @@ function AdminPage() {
                 </div>
 
                 {/* Send Message section */}
-                
-                {/* <div className="section">
+                <div className="section">
                     <h2>Send Message</h2>
-                    <div className='machine-list'>
-                    <div className='machine-tile'>
                     <textarea
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         placeholder="Enter your message"
                     />
                     <button onClick={handleSendMessage}>Send Message</button>
-                    </div>
-                    </div>
-                </div> */}
+                </div>
             </div>
         </div>
     );
