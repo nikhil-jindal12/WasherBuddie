@@ -106,7 +106,11 @@ def add_dryer():
 
 @app.route('/get_machines', methods=['GET'])
 def get_machines():
-    return jsonify({'DB_machines': [machine for machine in Database_Manager().get_all_machines()]})
+    # print([machine for machine in Database_Manager().get_all_machines()])
+    rv = []
+    for machine in Database_Manager().get_all_machines():
+        rv.append(machine.__dict__)
+    return jsonify({'DB_machines': rv})
 
 @app.route('/send_notification', methods=['POST'])
 def send_notification():
