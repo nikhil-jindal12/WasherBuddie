@@ -38,6 +38,8 @@ jobs:
         pip install python-dotenv
         pip install --force-reinstall "pymongo==4.10.1"
         pip install bcrypt
+        pip install flask
+        pip install flask-cors
 
     - name: Run tests with pytest (Windows)
       if: matrix.os == 'windows-latest'
