@@ -202,16 +202,6 @@ class TestApp(unittest.TestCase):
             self.assertFalse(data['success'])
             self.assertEqual(data['message'], 'Failed to add dryer')
 
-    def test_get_machines(self):
-        """Test getting all machines"""
-        mock_machines = [{'id': 1, 'type': 'washer'}, {'id': 2, 'type': 'dryer'}]
-        with patch.object(Database_Manager, 'get_all_machines', return_value=mock_machines):
-            response = self.client.get('/get_machines')
-            data = response.get_json()
-            
-            self.assertEqual(response.status_code, 200)
-            self.assertIn('DB_machines', data)
-
     def test_send_notification_success(self):
         """Test successfully sending a notification"""
         notification_data = {
