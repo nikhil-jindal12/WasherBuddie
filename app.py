@@ -106,7 +106,7 @@ def add_dryer():
 
 @app.route('/get_machines', methods=['GET'])
 def get_machines():
-    return jsonify({'DB_machines': [machine.__dict__ for machine in Database_Manager().get_all_machines()]})
+    return jsonify({'DB_machines': [machine for machine in Database_Manager().get_all_machines()]})
 
 @app.route('/send_notification', methods=['POST'])
 def send_notification():
@@ -136,6 +136,9 @@ def add_user():
 
     if not user_name:
         return jsonify({'success': False, 'error': 'No username was provided'}), 400
+    
+    if len(user_email) <= 0 or '@' not in user_email or '.' not in user_email:
+        return jsonify({'success': False, 'error': 'Invalid email address'}), 400
 
     try:
         success = interaction_manager.add_user(user_name, notification_preference, user_phone_number, user_email, phone_carrier, is_admin, password)
