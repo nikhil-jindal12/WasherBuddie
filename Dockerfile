@@ -45,7 +45,7 @@ COPY --from=frontend /app/washerbuddie/build /app/washerbuddie/build
 # Install Python dependencies
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-# Expose ports for Flask (5000) and React (3000)
+# Expose ports for Flask (5000)
 EXPOSE 5000
 
 # Set the command to run the Flask server (React is static content in this setup)

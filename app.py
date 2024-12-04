@@ -164,6 +164,11 @@ def logout():
     
     return jsonify({"message": "Logged out successfully!"}), 200
 
+@app.route('/get_admin', methods=['GET'])
+def get_admin():
+    return jsonify({"admin": session['is_admin']}), 200
+    
+
 
 @app.route('/authenticate_log_in', methods=['POST'])
 def authenticate_log_in():
@@ -215,7 +220,7 @@ def end_session():
 def set_out_of_order():
     data = request.json
     machine_id = data.get('machine_id')
-    user_name = data.get('user_name')
+    user_name = session['user_name']
 
     if machine_id not in [machine.machine_id for machine in Database_Manager().get_all_machines()] or user_name not in [user.user_name for user in Database_Manager().get_valid_users()]:
         return jsonify({'success': False, 'error': 'Machine or User not found'}), 404
@@ -227,6 +232,26 @@ def set_out_of_order():
         return jsonify({'success': success, 'message': 'Machine status updated successfully' if success else 'Failed to update machine status'})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/return_to_service', methods=['POST'])
+def return_to_service():
+    data = request.json
+    machine_id = data.get('machine_id')
+    user_name = session['user_name']
+
+    if machine_id not in [machine.machine_id for machine in Database_Manager().get_all_machines()] or user_name not in [user.user_name for user in Database_Manager().get_valid_users()]:
+        return jsonify({'success': False, 'error': 'Machine or User not found'}), 404
+
+    user = Database_Manager().get_specific_user(user_name)
+
+    try:
+        success = interaction_manager.return_to_service(machine_id, user)
+        return jsonify({'success': success, 'message': 'Machine status updated successfully' if success else 'Failed to update machine status'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+ 
+
 
 @app.route('/get_status', methods=['GET'])
 def get_status():
