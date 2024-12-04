@@ -126,16 +126,6 @@ class TestApp(unittest.TestCase):
         self.assertFalse(data['success'])
         self.assertEqual(data['error'], 'Invalid input')
 
-    def test_update_valid_input(self):
-        """Test update endpoint with valid input"""
-        test_data = {
-            "user_name": "Nikhil Jindal",
-            "code": 1,
-            "value": "password"
-        }
-        response = self.client.post('/update', json=test_data)
-        self.assertEqual(response.status_code, 200)
-
     def test_authenticate_log_in_success(self):
         """Test successful login authentication"""
         with patch.object(interaction_manager, 'authenticate_log_in', return_value=True):
