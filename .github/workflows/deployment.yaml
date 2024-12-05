@@ -17,11 +17,14 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '16'
+
+    - name: Install gh-pages
+      working-directory: ./washerbuddie
+      run: npm install gh-pages --save-dev
     
     - name: Install Dependencies
       working-directory: ./washerbuddie
       run: npm install
-      run: npm install gh-pages --save-dev
     
     - name: Build React App
       working-directory: ./washerbuddie
