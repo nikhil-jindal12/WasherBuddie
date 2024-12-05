@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import './home.css';
+import './Header.css'
 
 function Home() {
   const navigate = useNavigate();
