@@ -176,7 +176,6 @@ header button {
   width: 100vw;
   justify-content: center;
   gap: 1rem;
-  padding: 1rem;
   margin-top: 100px; /* Adjust to match the header height */
   box-sizing: border-box; /* Ensures padding doesn't affect layout size */
 }

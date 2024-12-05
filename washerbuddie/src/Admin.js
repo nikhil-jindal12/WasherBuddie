@@ -21,11 +21,11 @@ function AdminPage() {
                 }
                 const isAdmin = await response.json();
                 if (!isAdmin) {
-                    navigate('/'); // Redirect to home if not an admin
+                    navigate('/login'); // Redirect to login if not an admin
                 }
             } catch (error) {
                 console.error('Error checking admin status:', error);
-                navigate('/'); // Redirect to home on error
+                navigate('/login'); // Redirect to login on error
             }
         };
 
