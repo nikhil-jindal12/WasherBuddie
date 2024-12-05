@@ -15,8 +15,6 @@ CORS(app)  # Enable CORS for API calls
 # Initialize the interaction manager
 interaction_manager = Interaction_Manager()
 
-
-
 # API routes
 @app.route('/update', methods=['POST'])
 def update():
@@ -40,10 +38,6 @@ def update():
     except Exception as e:
         app.logger.error(f"Error in update endpoint: {str(e)}")
         return jsonify({"success": False, "error": str(e)}), 500
-
-
-
-
 
 @app.route('/authenticate', methods=['POST'])
 def authenticate():
@@ -106,7 +100,6 @@ def add_dryer():
 
 @app.route('/get_machines', methods=['GET'])
 def get_machines():
-    # print([machine for machine in Database_Manager().get_all_machines()])
     rv = []
     for machine in Database_Manager().get_all_machines():
         rv.append(machine.__dict__)
@@ -171,7 +164,7 @@ def logout():
 @app.route('/get_admin', methods=['GET'])
 def get_admin():
     return jsonify({"admin": session['is_admin']}), 200
-    
+
 @app.route('/reset_password', methods=['GET'])
 def reset_password():
     data = request.json
@@ -220,7 +213,7 @@ def end_session():
     user = Database_Manager().get_specific_user(user_name)
     
     try:
-        success = interaction_manager.end_session(machine_id, user)
+        success = interaction_manager.end_session(machine_id)
         return jsonify({'success': success, 'message': 'Session ended successfully' if success else 'Failed to end session'})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
@@ -258,9 +251,6 @@ def return_to_service():
         return jsonify({'success': success, 'message': 'Machine status updated successfully' if success else 'Failed to update machine status'})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
-
- 
-
 
 @app.route('/get_status', methods=['GET'])
 def get_status():
